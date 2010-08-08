@@ -166,7 +166,7 @@ class GainsController < ApplicationController
     # alle oder nur eigene einträge anzeigen:
     case(params[:id])
       when "all"
-      	@gain_pages, @gains = paginate :gains, :per_page => 30, :order => "datum DESC", :conditions => ["geloescht = false AND bezahlt = true"]
+      	@gains = Gain.paginate :page => params[:page], :order => "datum DESC", :conditions => ["geloescht = ? AND bezahlt = ?", false, true]
       	# summe des aktuellen monats:
 	  	@monat_netto = @monat_brutto = 0
 	  	for gain in @gains
@@ -177,7 +177,7 @@ class GainsController < ApplicationController
 	  	end
         
       when "future"
-      	@gain_pages, @gains = paginate :gains, :per_page => 30, :order => "datum DESC", :conditions => ['geloescht = false and abgerechnet = false and bezahlt = false']
+        @gains = Gain.paginate :page => params[:page], :order => "datum DESC", :conditions => ['geloescht = ? and abgerechnet = ? and bezahlt = ?', false, false, false]
       	# summe des aktuellen monats:
 	  	@future_netto = @future_brutto = 0
 	  	for gain in @gains
@@ -186,12 +186,12 @@ class GainsController < ApplicationController
 	  	end
         
       else
-      	@gain_pages, @gains = paginate :gains, :per_page => 30, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = false and abgerechnet = false']
+      	@gains = Gain.paginate :page => params[:page], :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = ? and abgerechnet = ?', false, false]
       	
       	# summen des aktuellen monats:
       	
       	@monat_netto_bezahlt = @monat_brutto_bezahlt = 0
-      	if (@gains_bezahlt = Gain.find(:all, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = false AND abgerechnet = false AND bezahlt = true' ])) && (@gains_bezahlt.length > 0)
+      	if (@gains_bezahlt = Gain.find(:all, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = ? AND abgerechnet = ? AND bezahlt = ?', false, false, true ])) && (@gains_bezahlt.length > 0)
 		  	for gain in @gains_bezahlt
 	  	    	if gain.datum.month == Date.today.month
 	          		@monat_netto_bezahlt += gain.netto
@@ -201,7 +201,7 @@ class GainsController < ApplicationController
 		end
 	  	
 	  	@monat_netto_unbezahlt = @monat_brutto_unbezahlt = 0
-	  	if (@gains_unbezahlt = Gain.find(:all, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = false AND abgerechnet = false AND bezahlt = false' ])) && (@gains_unbezahlt.length > 0)
+	  	if (@gains_unbezahlt = Gain.find(:all, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = ? AND abgerechnet = ? AND bezahlt = ?', false, false, false ])) && (@gains_unbezahlt.length > 0)
 		  	for gain in @gains_unbezahlt
 	  	    	if gain.datum.month == Date.today.month
 	          		@monat_netto_unbezahlt += gain.netto

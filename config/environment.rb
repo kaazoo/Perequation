@@ -37,6 +37,8 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
+
+  config.action_controller.session = { :key => "_perequation_session", :secret => "kaniec3yeesaeph5ok7vohnah9eiv4chaijaforohb0kee6osahwohz1kai8ahchaiJaishu8no8Chu6aethahsha8yah8aj7sie" }
   
   # See Rails::Configuration for more options
 end
@@ -51,3 +53,6 @@ end
 # end
 
 # Include your application configuration below
+
+require "will_paginate"
+

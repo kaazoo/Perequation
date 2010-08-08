@@ -8,4 +8,7 @@ class Gain < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :netto
 
+  cattr_reader :per_page
+  @@per_page = 30
+
 end
