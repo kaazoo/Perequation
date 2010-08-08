@@ -3,4 +3,4 @@ tmp/**/*
 doc/api
 doc/app
 public/abrechnung_*.pdf
-
+config/database.yml
