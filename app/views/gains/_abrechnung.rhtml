@@ -1,0 +1,52 @@
+
+<% if (@summe_netto == 0) && (@abrechnung_name == nil) %>
+
+  <p style="color: green">Bitte Eintr&auml;ge aus der Liste markieren!</p>
+    
+<% end %>
+
+
+  <% puts @abrechnung_name %>
+  
+
+<% if (@summe_netto != 0) && ((@abrechnung_name == nil) || (@abrechnung_name == "")) && ((@abrechnung_bestehend == nil) || (@abrechnung_bestehend == "")) %>
+
+  <% if (@abrechnung_name == "") || (@abrechnung_bestehend == "") %>
+	<p style="color: green">Bitte einen Namen angeben oder eine bestehende Abrechnung w&auml;hlen!</p>
+  <% end %>
+    <%= form_remote_tag(:update => "div_summe", :url => {:action => "auswahl_abrechnung"}) %>
+    <% flash[:netto] = @summe_netto %>
+    <% flash[:brutto] = @summe_brutto %>
+    <% flash[:nicht_bezahlt] = @nicht_bezahlt %>
+    <% flash[:bezahlt] = @bezahlt %>
+    <p><label for="abrechnung_name">Name</label><br/>
+    <%= text_field 'abrechnung', 'name' %></p>
+    <br>
+    <p><label for="abrechnung_bestehend">bestehene Abrechnungen</label><br/>
+    <% freie_abrechnungen =  Statement.find(:all, :conditions => ["einnahmen_netto = 0"]) %>
+    <%= collection_select("abrechnung", "bestehend", freie_abrechnungen, "id", "name", { :include_blank => true }) %></p>
+
+    <br>
+
+    <%= submit_tag 'abrechnen' %>
+    <%= end_form_tag %>
+  
+<% end %>  
+
+<% if (@summe_netto != 0) && ( ((@abrechnung_name != nil) && (@abrechnung_name != "")) || ((@abrechnung_bestehend != nil) && (@abrechnung_bestehend != "")) ) %>
+
+  Abrechnung '<%=h @abrechnung_name %>' wurde durchgef&uuml;hrt: <%=h MoreMoney::Money.new((@summe_netto)*100, 'EUR').format(:with_thousands).to_s+" (Netto) , "+MoreMoney::Money.new((@summe_brutto)*100, 'EUR').format(:with_thousands).to_s+" (Brutto)" %>
+  <br>
+  Hinweis: Dies bezieht sich nur auf die Einnahmen. 
+  <br><br>
+  
+  <%= puts params %>
+  
+  <% if @nicht_bezahlt && (@nicht_bezahlt[0] != nil) %>
+    <p style="color: green">Folgende Eintr&auml;ge wurde nicht abgerechnet, da sie noch nicht bezahlt wurden:</p><br> 
+    <% @nicht_bezahlt.each { |i| gain = Gain.find(i) %>
+    <%= gain.name %><br>
+    <% } %>
+    
+  <% end %> 
+<% end %>

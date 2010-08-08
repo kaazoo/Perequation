@@ -1,0 +1,27 @@
+<h1>Listing statements</h1>
+
+<table>
+  <tr>
+  <% for column in Statement.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for statement in @statements %>
+  <tr>
+  <% for column in Statement.content_columns %>
+    <td><%=h statement.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => statement %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => statement %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => statement }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @statement_pages.current.previous } if @statement_pages.current.previous %>
+<%= link_to 'Next page', { :page => @statement_pages.current.next } if @statement_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New statement', :action => 'new' %>

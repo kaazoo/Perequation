@@ -1,0 +1,3 @@
+<% if @summe_netto && (@summe_netto != 0) %>
+  <%=h "Summe: "+MoreMoney::Money.new((@summe_netto)*100, 'EUR').format(:with_thousands).to_s+" (Netto) , " +MoreMoney::Money.new((@summe_brutto)*100, 'EUR').format(:with_thousands).to_s+" (Brutto)" %>
+<% end %>

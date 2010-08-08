@@ -1,0 +1,8 @@
+<% for column in Gain.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @gain.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Editieren', :action => 'edit', :id => @gain %> |
+<%= link_to 'Zur&uuml;ck', :action => 'list' %>

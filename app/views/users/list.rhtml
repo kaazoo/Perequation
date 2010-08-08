@@ -1,0 +1,33 @@
+<h1>Listing users</h1>
+
+<table>
+  <tr>
+  <% for column in User.content_columns %>
+    <% if (column.name == "name") || (column.name == "login") || (column.name == "email") %>
+      <th><%= column.human_name %></th>
+    <% end %>
+  <% end %>
+  </tr>
+  
+<% for user in @users %>
+  <tr>
+  <% for column in User.content_columns %>
+    <% if (column.name == "name") || (column.name == "login") || (column.name == "email") %>
+      <td><%=h user.send(column.name) %></td>
+    <% end %>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => user %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :post => true %></td>
+  
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @user_pages.current.previous } if @user_pages.current.previous %>
+<%= link_to 'Next page', { :page => @user_pages.current.next } if @user_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New user', :action => 'new' %>
+<%= link_to 'neu anlegen', :controller => 'main', :action => 'signup' %>

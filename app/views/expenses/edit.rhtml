@@ -1,0 +1,9 @@
+<h1>Ausgabe editieren</h1>
+
+<%= start_form_tag :action => 'update', :id => @expense %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'speichern' %>
+<%= end_form_tag %>
+
+<%= link_to 'Anzeigen', :action => 'show', :id => @expense %> |
+<%= link_to 'Zur&uuml;ck', :action => 'list' %>

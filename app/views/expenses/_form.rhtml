@@ -1,0 +1,74 @@
+<%= error_messages_for 'expense' %>
+
+<SCRIPT TYPE="text/javascript" LANGUAGE="javasScript"><!--// Berechnungs-Variablenvar nettobetrag = 0; // Nettobetragvar bruttobetrag = 0; // Bruttobetragvar steuerbetrag = 0; // Mehrwertsteuer
+
+var choose = "";
+// Berechnungfunction berechnen(chooser){with(window.document.forms[0]) {
+
+// Mehrwertsteuersatzsteuersatz = expense_mwst.value;
+
+if(chooser != "") {
+	choose = chooser;
+}
+
+if(choose == "nb") {		// Nettobetrag einlesen	nettobetrag = expense_netto.value.replace((/,/g), ".");
+	expense_netto.value = nettobetrag;
+	
+	if(nettobetrag == "") {		alert("Fehler: Bitte Nettobetrag eingeben!");		return false;	}	else if(isNaN(nettobetrag) == true){		alert("Fehler: Bitte als Nettobetrag einen Zahlenwert eingeben!");		return false;	}
+	
+	// Brutto-Betrag berechnen	steuerbetrag = eval(nettobetrag + "*" + steuersatz);	bruttobetrag = eval(nettobetrag + "+" + steuerbetrag);	// Brutto-Betrag ausgeben	expense_brutto.value = bruttobetrag;
+	
+	return true;
+}	
+
+if(choose == "bn") {		// Bruttobetrag einlesen	bruttobetrag = expense_brutto.value.replace((/,/g), ".");
+	expense_brutto.value = bruttobetrag;
+	
+	if(bruttobetrag == "") {		alert("Fehler: Bitte Bruttobetrag eingeben!");		return false;	}	else if(isNaN(bruttobetrag) == true){		alert("Fehler: Bitte als Bruttobetrag einen Zahlenwert eingeben!");		return false;	}
+	
+	// Netto-Betrag berechnen	nettobetrag = eval("(100 * " + bruttobetrag + ") / ( " + steuersatz + " * 100 + 100)");	// Netto-Betrag ausgeben	expense_netto.value = nettobetrag;	
+
+	return true;
+}	
+
+}
+}
+// Ende der JavaScript-Anweisungen// --></SCRIPT>
+
+
+<!--[form:expense]-->
+<p><label for="expense_name">Name</label><br/>
+<%= text_field 'expense', 'name'  %></p>
+
+<p><label for="expense_datum">Datum</label><br/>
+<%= date_select 'expense', 'datum', :order => [:day, :month, :year] %></p>
+
+<p><label for="expense_netto">Netto</label><br/>
+<%= text_field 'expense', 'netto', :onChange => "berechnen('nb');"  %></p>
+
+<p><label for="expense_brutto">Brutto</label><br/>
+<%= text_field 'expense', 'brutto', :onChange => "berechnen('bn');"  %></p>
+
+<p><label for="expense_mwst">Mwst</label><br/>
+<%= select("expense", "mwst", [ ["19 %", 0.19], ["7 %", 0.07], ["0 %", 0] ],{}, {"onChange" => "berechnen('');"}) %></p>
+
+<p><label for="expense_bezahlt">bezahlt</label><br/>
+<%= select("expense", "bezahlt", [ ["ja", true], ["nein", false] ],{}, {"onChange" => "if(this.value == 'true') {document.getElementById('date_div').style.visibility='visible';} else {document.getElementById('date_div').style.visibility='hidden';}"}) %></p>
+
+<div id="date_div" 
+<% if @expense.bezahlt == true %>
+  style="visibility:visible">
+<% else %>
+  style="visibility:hidden">
+<% end %>
+
+<p><label for="expense_datum">Datum</label><br/>
+<%= date_select('expense', 'datum', :order => [:day, :month, :year]) %></p>
+</div>
+
+<p><label for="expense_art">Art</label><br/>
+<%= select("expense", "art", [ ["Fremdleistung", "Fremdleistung"], ["Investition", "Investition"], ["Sonstiges", "Sonstiges"] ]) %></p>
+
+
+<!--[eoform:expense]-->
+

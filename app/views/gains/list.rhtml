@@ -1,0 +1,135 @@
+<link href="/stylesheets/content.css" rel="stylesheet" type="text/css" />
+<h1>Einnahmen</h1>
+
+<!--<%= form_remote_tag(:update => "div_summe", :name => "liste", :url => {:action => "formular_liste"}) %>-->
+
+<table cellspacing="2" cellpadding="3" class="table_input">
+  <tr align="left">
+  <!--<th>&nbsp;</th>-->
+  <th>Name</th>
+  <% if params[:id] != "future" %>
+  <th>Datum</th>
+  <% end %>
+  <th>Netto</th>
+  <th>Brutto</th>
+  <th>MwSt</th>
+  <% if (params[:id] != "all") && (params[:id] != "future") %>
+  <th>bezahlt</th>
+  <% end %>
+  <th>Eintragsdatum</th>
+  <% if (params[:id] == "all") || (params[:id] == "future") %>
+    <th>Person</th>
+    <!--<th>Abrechnung</th>-->
+  <% end %>
+  </tr>
+  
+<% for gain in @gains %>
+  <tr
+  <% if gain.send('abgerechnet') == true %>
+    style="color:#ccccaa"
+  <% end %> >
+  
+  <!--<td><%= check_box("auswahl", gain.id) %></td>-->
+  <%
+  for column in Gain.content_columns
+    # bestimmte Spalten weglassen:
+    if (column.name != "geloescht") && (column.name != "abgerechnet") 
+      case column.name
+        when "datum"
+          if params[:id] != "future"
+	          if gain.send('bezahlt') == true
+	            # Datum umwandeln:
+	            old_date = gain.send(column.name).to_s
+	            new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}" 
+		        %><td><%=h new_date %></td><%
+		      else
+		        %><td align="center">---</td><%
+		      end
+		  end
+	    when "netto"
+	      %><td><%=h MoreMoney::Money.new(gain.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	      # ((gain.send(column.name)*100).round/100.0).to_s.gsub(/\./,',')
+	    when "brutto"
+	      %><td><%=h MoreMoney::Money.new(gain.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	    when "mwst"
+	      %><td><%=h (gain.send(column.name) * 100).to_i.to_s + " %" %></td><%
+	    when "bezahlt"
+	      if (params[:id] != "all") && (params[:id] != "future")
+		      if gain.send(column.name) == true
+		        bezahlt = "ja"
+		      else
+		        bezahlt = "nein"
+		      end
+		      %><td><%=h bezahlt %></td><%
+		  end
+	    when "eintragsdatum"
+	      # Datum umwandeln:
+          old_date = gain.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}"
+	      %><td><%=h new_date %></td><%
+	    else
+	      %><td><strong><%=h gain.send(column.name) %></strong></td><%
+	  end
+    end
+    
+  end
+  if (params[:id] == "all") || (params[:id] == "future")
+  	person = User.find(gain.send('user_id')).name rescue "???"
+    %><td><%=h person %></td><%
+  #  abrechnung = Statement.find(gain.send('statement_id')).name rescue "---"
+  #  %><td><%=h abrechnung %></td><%
+  end
+  
+  if (User.find(gain.send('user_id')) == current_user) && (gain.send('abgerechnet') == false)
+    %>
+    <td><%= link_to 'Editieren', :action => 'edit', :id => gain %></td>
+    <td><%= link_to 'L&ouml;schen', { :action => 'destroy', :id => gain }, :confirm => 'Wirklich löschen?', :post => true %></td>
+  <% end %>
+  
+  </tr>
+<% end %>
+</table>
+
+
+
+<br>
+<% if params[:id] == "all" %>
+Summe <%= Date.today.strftime("%B") %> <%= Date.today.year %>: <%= MoreMoney::Money.new(@monat_netto * 100, 'EUR').format(:with_thousands) %> (Netto), <%= MoreMoney::Money.new(@monat_brutto * 100, 'EUR').format(:with_thousands) %> (Brutto)
+<% elsif params[:id] == "future" %>
+Summe: <%= MoreMoney::Money.new(@future_netto * 100, 'EUR').format(:with_thousands) %> (Netto), <%= MoreMoney::Money.new(@future_brutto * 100, 'EUR').format(:with_thousands) %> (Brutto)
+<% else %>
+Summe bezahlt: <%= MoreMoney::Money.new(@monat_netto_bezahlt * 100, 'EUR').format(:with_thousands) %> (Netto), <%= MoreMoney::Money.new(@monat_brutto_bezahlt * 100, 'EUR').format(:with_thousands) %> (Brutto)
+<br>
+Summe unbezahlt: <%= MoreMoney::Money.new(@monat_netto_unbezahlt * 100, 'EUR').format(:with_thousands) %> (Netto), <%= MoreMoney::Money.new(@monat_brutto_unbezahlt * 100, 'EUR').format(:with_thousands) %> (Brutto)
+<% end %>
+<br><br>
+
+<%= link_to 'Vorige Seite', { :page => @gain_pages.current.previous } if @gain_pages.current.previous %>
+<%= link_to 'Nächste Seite', { :page => @gain_pages.current.next } if @gain_pages.current.next %> 
+
+<br />
+
+
+<% if (params[:id] != "all") && (params[:id] != "future") %>
+<%= link_to 'Neue Einnahme', :action => 'new' %>
+<% end %>
+
+
+<!--
+<%= submit_tag 'Auswahl aufsummieren', :name => 'which_action', :onclick => "Form.getInputs(this.form, 'submit').each(function(x) { if (x.value != this.value) {x.name += '_'; x.disabled=true} }.bind(this))" %>
+-->
+
+<!--
+<% if params[:id] == "all" %>
+  <%= submit_tag 'Auswahl abrechnen', :name => 'which_action', :onclick => "Form.getInputs(this.form, 'submit').each(function(x) { if (x.value != this.value) {x.name += '_'; x.disabled=true} }.bind(this))" %>
+<% end %>
+-->
+
+<!--<%= end_form_tag %>
+
+<br>
+
+<div id="div_summe"></div>
+
+<br>
+-->

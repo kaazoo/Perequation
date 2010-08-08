@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+
+<%= stylesheet_link_tag 'scaffold' %>
+<%= javascript_include_tag :defaults %>
+
+<link href="/stylesheets/content.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+<body>
+
+<h1>Abrechnungen</h1>
+
+<table cellspacing="2" cellpadding="3" class="table_input">
+  <tr>
+    <th>Monat</th>
+    <th>Netto-Gewinn Max</th>
+    <th>Netto-Gewinn Hans</th>
+    <th>Differenz / 2</th>
+    <th>abgerechnet</th>
+  </tr>
+  
+  
+<%
+monat_aktuell = Date.today.month
+jahr_aktuell = Date.today.year
+
+# user-ids aus db holen
+user_max = User.find_by_login('max').id.to_s
+user_hans = User.find_by_login('hans').id.to_s
+
+einnahmen_max = Gain.find(:all, :conditions => ['user_id='+user_max+' and geloescht=false and bezahlt=true'])
+ausgaben_max = Expense.find(:all, :conditions => ['user_id='+user_max+' and geloescht=false and bezahlt=true'])
+einnahmen_hans = Gain.find(:all, :conditions => ['user_id='+user_hans+' and geloescht=false and bezahlt=true'])
+ausgaben_hans = Expense.find(:all, :conditions => ['user_id='+user_hans+' and geloescht=false and bezahlt=true'])
+
+monat_aktuell.downto(1) do |x|
+  dat = Date.strptime(jahr_aktuell.to_s + '-' + x.to_s + '-' + '01')
+  if x == 12
+    dat_end = Date.strptime((jahr_aktuell + 1).to_s + '-01-' + '01')
+  else
+    dat_end = Date.strptime(jahr_aktuell.to_s + '-' + (x + 1).to_s + '-' + '01')
+  end
+  
+  summe_einnahmen_max = 0
+  einnahmen_max.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_einnahmen_max += j.netto
+    end
+  end
+  
+  summe_ausgaben_max = 0
+  ausgaben_max.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_ausgaben_max += j.netto
+    end
+  end
+  
+  summe_einnahmen_hans = 0
+  einnahmen_hans.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_einnahmen_hans += j.netto
+    end
+  end
+  
+  summe_ausgaben_hans = 0
+  ausgaben_hans.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_ausgaben_hans += j.netto
+    end
+  end
+  
+  gewinn_max = summe_einnahmen_max - summe_ausgaben_max
+  gewinn_hans = summe_einnahmen_hans - summe_ausgaben_hans
+  
+  %>
+  <% if Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
+    <tr style="color:#ccccaa">
+  <% else %>
+    <tr>
+  <% end %>
+   <td><%= dat.strftime("%B %Y") %></td>
+   <td><%= MoreMoney::Money.new(gewinn_max *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new(gewinn_hans *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new( ((gewinn_hans - gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
+   <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
+     <td><%= abr.erstellungsdatum.strftime("%d. %B %Y") %></td> 
+   <% else %>
+     <% if x != monat_aktuell %>
+     <td><%= link_to 'abrechnen', :action => 'abrechnen', :id => CGI::escape(dat.to_s + ',' + dat_end.to_s) %></td>
+     <% end %>
+   <% end %>
+  </tr>
+  <%
+end
+
+
+if @erstes_jahr < jahr_aktuell
+
+(jahr_aktuell - 1).downto(@erstes_jahr + 1) do |x|
+  12.downto(1) do |y|
+    dat = Date.strptime(x.to_s + '-' + y.to_s + '-' + '01')
+    if y == 12
+      dat_end = Date.strptime((x + 1).to_s + '-01-' + '01')
+    else
+      dat_end = Date.strptime(x.to_s + '-' + (y + 1).to_s + '-' + '01')
+    end
+    
+    summe_einnahmen_max = 0
+    einnahmen_max.each do |j|
+      if (j.datum >= dat) && (j.datum < dat_end)
+        summe_einnahmen_max += j.netto
+      end
+    end
+  
+    summe_ausgaben_max = 0
+    ausgaben_max.each do |j|
+      if (j.datum >= dat) && (j.datum < dat_end)
+        summe_ausgaben_max += j.netto
+      end
+    end
+  
+    summe_einnahmen_hans = 0
+    einnahmen_hans.each do |j|
+      if (j.datum >= dat) && (j.datum < dat_end)
+        summe_einnahmen_hans += j.netto
+      end
+    end
+  
+    summe_ausgaben_hans = 0
+    ausgaben_hans.each do |j|
+      if (j.datum >= dat) && (j.datum < dat_end)
+        summe_ausgaben_hans += j.netto
+      end
+    end
+  
+    gewinn_max = summe_einnahmen_max - summe_ausgaben_max
+    gewinn_hans = summe_einnahmen_hans - summe_ausgaben_hans
+    
+    %>
+    <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
+      <tr style="color:#ccccaa">
+    <% else %>
+      <tr>
+    <% end %>
+     <td><%= dat.strftime("%B %Y") %></td>
+     <td><%= MoreMoney::Money.new(gewinn_max *100, 'EUR').format(:with_thousands) %></td>
+     <td><%= MoreMoney::Money.new(gewinn_hans *100, 'EUR').format(:with_thousands) %></td>
+     <td><%= MoreMoney::Money.new( ((gewinn_hans - gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
+     <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
+       <td><%= abr.erstellungsdatum.strftime("%d. %B %Y") %></td> 
+     <% else %>
+       <td><%= link_to 'abrechnen', :action => 'abrechnen', :id => CGI::escape(dat.to_s + ',' + dat_end.to_s) %></td>
+     <% end %>
+    </tr>
+    <%
+  end
+end
+  
+12.downto(@erster_monat) do |x|
+  dat = Date.strptime(@erstes_jahr.to_s + '-' + x.to_s + '-' + '01')
+  if x == 12
+    dat_end = Date.strptime((@erstes_jahr + 1).to_s + '-01-' + '01')
+  else
+    dat_end = Date.strptime(@erstes_jahr.to_s + '-' + (x + 1).to_s + '-' + '01')
+  end
+  
+  summe_einnahmen_max = 0
+  einnahmen_max.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_einnahmen_max += j.netto
+    end
+  end
+  
+  summe_ausgaben_max = 0
+  ausgaben_max.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_ausgaben_max += j.netto
+    end
+  end
+  
+  summe_einnahmen_hans = 0
+  einnahmen_hans.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_einnahmen_hans += j.netto
+    end
+  end
+  
+  summe_ausgaben_hans = 0
+  ausgaben_hans.each do |j|
+    if (j.datum >= dat) && (j.datum < dat_end)
+      summe_ausgaben_hans += j.netto
+    end
+  end
+  
+  gewinn_max = summe_einnahmen_max - summe_ausgaben_max
+  gewinn_hans = summe_einnahmen_hans - summe_ausgaben_hans
+  
+
+  %>
+  <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
+    <tr style="color:#ccccaa">
+  <% else %>
+    <tr>
+  <% end %>
+   <td><%= dat.strftime("%B %Y") %></td>
+   <td><%= MoreMoney::Money.new(gewinn_max *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new(gewinn_hans *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new( ((gewinn_hans - gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
+   <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
+     <td><%= abr.erstellungsdatum.strftime("%d. %B %Y") %></td> 
+   <% else %>
+     <td><%= link_to 'abrechnen', :action => 'abrechnen', :id => CGI::escape(dat.to_s + ',' + dat_end.to_s) %></td>
+   <% end %>
+  </tr>
+  <%
+end 
+
+end 
+  
+%>
+</table>
+
+
+
+</body>
+</html>

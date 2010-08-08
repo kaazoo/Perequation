@@ -1,0 +1,19 @@
+<%= error_messages_for 'statement' %>
+
+<!--[form:statement]-->
+<p><label for="statement_name">Name</label><br/>
+<%= text_field 'statement', 'name'  %></p>
+
+<p><label for="statement_einnahmen">Einnahmen</label><br/>
+<%= text_field 'statement', 'einnahmen'  %></p>
+
+<p><label for="statement_ausgaben">Ausgaben</label><br/>
+<%= text_field 'statement', 'ausgaben'  %></p>
+
+<p><label for="statement_gewinn">Gewinn</label><br/>
+<%= text_field 'statement', 'gewinn'  %></p>
+
+<p><label for="statement_erstellungsdatum">Erstellungsdatum</label><br/>
+<%= date_select 'statement', 'erstellungsdatum'  %></p>
+<!--[eoform:statement]-->
+

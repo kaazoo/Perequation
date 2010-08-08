@@ -1,0 +1,141 @@
+body {
+	background-color: #CCCCCC;
+}
+.text_01 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000000;
+}
+.bg_menue {
+	background-image: url(../pictures_site/bg_menue_02.gif);
+	background-color: #4B5B6A;
+}
+.menue {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+a.menue:link {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+a.menue:hover {
+	color: #FFCC00;
+	text-decoration: none;
+}
+.bg_menue_buttons {
+	border-right-width: 1px;
+	border-right-style: solid;
+	border-right-color: #FFFFFF;
+}
+.bg_inhalt {
+	background-image: url(../pictures_site/bg_inhalt.gif);
+	background-repeat: repeat-y;
+	background-color: #FFFFFF;
+}
+.bg_callback {
+	background-image: url(../pictures_site/bg_callback.gif);
+	background-repeat: no-repeat;
+}
+.menue_active {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFCC00;
+	text-decoration: none;
+}
+.text_02 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.formularInput {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+	border: 1px solid #000000;
+}
+.formularButton {
+	background-color: #3C4D55;
+	border: 1px solid #FFFFFF;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #FFFFFF;
+}
+.links_normal {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #000000;
+	text-decoration: none;
+}
+a.links_normal:link {
+	color: #000000;
+	text-decoration: none;
+}
+a.links_normal:hover {
+	text-decoration: underline;
+}
+.linie_vertikal {
+	background-image: url(../pictures_site/linie_vertikal.gif);
+	background-repeat: repeat-y;
+	background-position: center;
+}
+.ueberschrift_01 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #475C67;
+	text-decoration: none;
+	text-indent: 5px;
+	background-image: url(../pictures_site/linie_horizontal.gif);
+	background-repeat: repeat-x;
+}
+.linie_horizontal_25 {
+	background-image: url(../pictures_site/linie_horizontal.gif);
+	background-repeat: repeat-x;
+}
+.linie_horizontal_02 {
+	background-image: url(../pictures_site/linie_horizontal_02.gif);
+	background-repeat: repeat-x;
+	background-position: center;
+}
+.text_tabelle_01 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000000;
+	padding-left: 5px;
+}
+.text_tabelle_01 a{
+	font-size: 11px;
+	font-weight: bold;
+	color: #000000;
+	text-decoration:none;
+}
+.text_tabelle_01 a:hover{
+	text-decoration:underline;
+}
+.liste {
+	list-style-position: inside;
+	list-style-type: disc;
+}
+.link_konzept3d {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-weight: bold;
+	color: #000000;
+	text-decoration: none;
+}
+a.link_konzept3d:link {
+	color: #000000;
+}
+a.link_konzept3d:hover {
+	color: #BD2824;
+	text-decoration: none;
+}

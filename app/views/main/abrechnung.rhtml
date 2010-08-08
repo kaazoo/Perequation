@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+
+<%= stylesheet_link_tag 'scaffold' %>
+<%= javascript_include_tag :defaults %>
+
+<link href="/stylesheets/content.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+<body>
+
+<h1>Abrechnung <%= @month_name+" "+@year %></h1>
+
+<br /><br />
+Alle Werte sind in Netto.
+
+<br /><br /><br />
+
+<b>Hans</b><br>
+Einnahmen: <%= MoreMoney::Money.new(@summe_einnahmen_hans *100, 'EUR').format(:with_thousands) %> EUR<br />
+Ausgaben: <%= MoreMoney::Money.new(@summe_ausgaben_hans *100, 'EUR').format(:with_thousands) %> EUR<br />
+Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_hans *100, 'EUR').format(:with_thousands) %> EUR<br />
+
+<br />
+
+<b>Max</b><br>
+Einnahmen: <%= MoreMoney::Money.new(@summe_einnahmen_max *100, 'EUR').format(:with_thousands) %> EUR<br />
+Ausgaben: <%= MoreMoney::Money.new(@summe_ausgaben_max *100, 'EUR').format(:with_thousands) %> EUR<br />
+Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_thousands) %> EUR<br />
+
+<br /><br />
+
+<b>Differenz:</b> <%= MoreMoney::Money.new( ((@summe_gewinn_hans - @summe_gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %> EUR<br />
+
+<br /><br />
+
+<b>alle Einnahmen Hans</b>
+
+<table cellspacing="2" cellpadding="3" class="table_input">
+  <tr align="left">
+  <th>Name</th>
+  <th>Datum</th>
+  <th>Netto</th>
+  <!--<th>Brutto</th>-->
+  <th>MwSt</th>
+  <th>Eintragsdatum</th>
+  </tr>
+  
+<% for gain in @gains_hans %>
+  <tr>
+  <% 
+  for column in Gain.content_columns
+    # bestimmte Spalten weglassen:
+    if (column.name != "geloescht") && (column.name != "abgerechnet") && (column.name != "bezahlt") && (column.name != "brutto")
+      case column.name
+        when "datum"
+          # Datum umwandeln:
+          old_date = gain.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}" 
+	      %><td><%=h new_date %></td><%
+	    when "netto"
+	      %><td><%=h MoreMoney::Money.new(gain.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	      # ((gain.send(column.name)*100).round/100.0).to_s.gsub(/\./,',')
+	    when "brutto"
+	      %><td><%=h MoreMoney::Money.new(gain.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	    when "mwst"
+	      %><td><%=h (gain.send(column.name) * 100).to_i.to_s + " %" %></td><%
+	      
+	    when "eintragsdatum"
+	      # Datum umwandeln:
+          old_date = gain.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}"
+	      %><td><%=h new_date %></td><%
+	    else
+	      %><td><strong><%=h gain.send(column.name) %></strong></td><%
+	  end
+     end
+    
+  end
+  %>
+  
+  </tr>
+<% end %>
+</table>
+
+
+<br /><br /><br />
+
+<b>alle Einnahmen Max</b>
+
+<table cellspacing="2" cellpadding="3" class="table_input">
+  <tr align="left">
+  <th>Name</th>
+  <th>Datum</th>
+  <th>Netto</th>
+  <!--<th>Brutto</th>-->
+  <th>MwSt</th>
+  <th>Eintragsdatum</th>
+  </tr>
+  
+<% for gain in @gains_max %>
+  <tr>
+  <% 
+  for column in Gain.content_columns
+    # bestimmte Spalten weglassen:
+    if (column.name != "geloescht") && (column.name != "abgerechnet") && (column.name != "bezahlt") && (column.name != "brutto")
+      case column.name
+        when "datum"
+          # Datum umwandeln:
+          old_date = gain.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}" 
+	      %><td><%=h new_date %></td><%
+	    when "netto"
+	      %><td><%=h MoreMoney::Money.new(gain.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	      # ((gain.send(column.name)*100).round/100.0).to_s.gsub(/\./,',')
+	    when "brutto"
+	      %><td><%=h MoreMoney::Money.new(gain.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	    when "mwst"
+	      %><td><%=h (gain.send(column.name) * 100).to_i.to_s + " %" %></td><%
+	      
+	    when "eintragsdatum"
+	      # Datum umwandeln:
+          old_date = gain.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}"
+	      %><td><%=h new_date %></td><%
+	    else
+	      %><td><strong><%=h gain.send(column.name) %></strong></td><%
+	  end
+     end
+    
+  end
+  %>
+  
+  </tr>
+<% end %>
+</table>
+
+
+
+<br /><br /><br />
+
+<b>alle Ausgaben Hans</b>
+
+<table cellspacing="2" cellpadding="3" class="table_input">
+  <tr align="left">
+  <th>Name</th>
+  <th>Datum</th>
+  <th>Netto</th>
+  <!--<th>Brutto</th>-->
+  <th>MwSt</th>
+  <th>Art</th>
+  <th>Eintragsdatum</th>
+  </tr>
+  
+<% for expense in @expenses_hans %>
+  <tr>
+  <% 
+  for column in Expense.content_columns
+    # bestimmte Spalten weglassen:
+    if (column.name != "geloescht") && (column.name != "abgerechnet") && (column.name != "bezahlt") && (column.name != "brutto")
+      case column.name
+        when "datum"
+          # Datum umwandeln:
+          old_date = expense.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}" 
+	      %><td><%=h new_date %></td><%
+	    when "netto"
+	      %><td><%=h MoreMoney::Money.new(expense.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	      # ((expense.send(column.name)*100).round/100.0).to_s.gsub(/\./,',')
+	    when "brutto"
+	      %><td><%=h MoreMoney::Money.new(expense.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	    when "mwst"
+	      %><td><%=h (expense.send(column.name) * 100).to_i.to_s + " %" %></td><%
+	      
+	    when "eintragsdatum"
+	      # Datum umwandeln:
+          old_date = expense.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}"
+	      %><td><%=h new_date %></td><%
+	    else
+	      %><td><strong><%=h expense.send(column.name) %></strong></td><%
+	  end
+     end
+    
+  end
+  %>
+  
+  </tr>
+<% end %>
+</table>
+
+<br /><br /><br />
+
+<b>alle Ausgaben Max</b>
+
+<table cellspacing="2" cellpadding="3" class="table_input">
+  <tr align="left">
+  <th>Name</th>
+  <th>Datum</th>
+  <th>Netto</th>
+  <!--<th>Brutto</th>-->
+  <th>MwSt</th>
+  <th>Art</th>
+  <th>Eintragsdatum</th>
+  </tr>
+  
+<% for expense in @expenses_max %>
+  <tr>
+  <% 
+  for column in Expense.content_columns
+    # bestimmte Spalten weglassen:
+    if (column.name != "geloescht") && (column.name != "abgerechnet") && (column.name != "bezahlt") && (column.name != "brutto")
+      case column.name
+        when "datum"
+          # Datum umwandeln:
+          old_date = expense.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}" 
+	      %><td><%=h new_date %></td><%
+	    when "netto"
+	      %><td><%=h MoreMoney::Money.new(expense.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	      # ((expense.send(column.name)*100).round/100.0).to_s.gsub(/\./,',')
+	    when "brutto"
+	      %><td><%=h MoreMoney::Money.new(expense.send(column.name)*100, 'EUR').format(:with_thousands) %></td><%
+	    when "mwst"
+	      %><td><%=h (expense.send(column.name) * 100).to_i.to_s + " %" %></td><%
+	      
+	    when "eintragsdatum"
+	      # Datum umwandeln:
+          old_date = expense.send(column.name).to_s
+          new_date = "#{old_date[8,2]}.#{old_date[5,2]}.#{old_date[0,4]}"
+	      %><td><%=h new_date %></td><%
+	    else
+	      %><td><strong><%=h expense.send(column.name) %></strong></td><%
+	  end
+     end
+    
+  end
+  %>
+  
+  </tr>
+<% end %>
+</table>
+
+
+
+<br /><br /><br /><br />
+<a href="/main/abrechnung_pdf/<%= CGI::escape(params[:id]) %>">als PDF &ouml;ffnen</a>
+<br /><br />
+
+</body>
+</html>

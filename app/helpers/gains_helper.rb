@@ -1,0 +1,2 @@
+module GainsHelper
+end

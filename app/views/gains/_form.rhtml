@@ -1,0 +1,110 @@
+<%= error_messages_for 'gain' %>
+
+<SCRIPT TYPE="text/javascript" LANGUAGE="javasScript">
+<!--
+
+
+// Berechnungs-Variablen
+var nettobetrag = 0; // Nettobetrag
+var bruttobetrag = 0; // Bruttobetrag
+var steuerbetrag = 0; // Mehrwertsteuer
+
+var choose = "";
+
+// Berechnung
+function berechnen(chooser)
+{
+with(window.document.forms[0]) {
+
+// Mehrwertsteuersatz
+steuersatz = gain_mwst.value;
+
+if(chooser != "") {
+	choose = chooser;
+}
+
+if(choose == "nb") {	
+	// Nettobetrag einlesen
+	nettobetrag = gain_netto.value.replace((/,/g), ".");
+	gain_netto.value = nettobetrag;
+	
+	if(nettobetrag == "") {
+		alert("Fehler: Bitte Nettobetrag eingeben!");
+		return false;
+	}
+	else if(isNaN(nettobetrag) == true){
+		alert("Fehler: Bitte als Nettobetrag einen Zahlenwert eingeben!");
+		return false;
+	}
+	
+	// Brutto-Betrag berechnen
+	steuerbetrag = eval(nettobetrag + "*" + steuersatz);
+	bruttobetrag = eval(nettobetrag + "+" + steuerbetrag);
+
+	// Brutto-Betrag ausgeben
+	gain_brutto.value = bruttobetrag;
+	
+	return true;
+}	
+
+if(choose == "bn") {	
+	// Bruttobetrag einlesen
+	bruttobetrag = gain_brutto.value.replace((/,/g), ".");
+	gain_brutto.value = bruttobetrag;
+	
+	if(bruttobetrag == "") {
+		alert("Fehler: Bitte Bruttobetrag eingeben!");
+		return false;
+	}
+	else if(isNaN(bruttobetrag) == true){
+		alert("Fehler: Bitte als Bruttobetrag einen Zahlenwert eingeben!");
+		return false;
+	}
+	
+	// Netto-Betrag berechnen
+	nettobetrag = eval("(100 * " + bruttobetrag + ") / ( " + steuersatz + " * 100 + 100)");
+
+	// Netto-Betrag ausgeben
+	gain_netto.value = nettobetrag;
+	
+
+	return true;
+}	
+
+
+}
+}
+
+// Ende der JavaScript-Anweisungen
+// -->
+</SCRIPT>
+
+<!--[form:gain]-->
+<p><label for="gain_name">Name</label><br/>
+<%= text_field 'gain', 'name'  %></p>
+
+<p><label for="gain_netto">Netto</label><br/>
+<%= text_field 'gain', 'netto', :onChange => "berechnen('nb');" %></p>
+
+<p><label for="gain_brutto">Brutto</label><br/>
+<%= text_field 'gain', 'brutto', :onChange => "berechnen('bn');"  %></p>
+
+<p><label for="gain_mwst">MwSt</label><br/>
+<%= select("gain", "mwst", [ ["0 %", 0], ["19 %", 0.19], ["16 %", 0.16] ],{}, {"onChange" => "berechnen('');"}) %></p>
+
+<p><label for="gain_bezahlt">bezahlt</label><br/>
+<%= select("gain", "bezahlt", [ ["nein", false], ["ja", true] ],{}, {"onChange" => "if(this.value == 'true') {document.getElementById('date_div').style.visibility='visible';} else {document.getElementById('date_div').style.visibility='hidden';}"}) %></p>
+
+<div id="date_div" 
+<% if @gain.bezahlt == true %>
+  style="visibility:visible">
+<% else %>
+  style="visibility:hidden">
+<% end %>
+  
+<p><label for="gain_datum">Datum</label><br/>
+<%= date_select('gain', 'datum', :order => [:day, :month, :year]) %></p>
+</div>
+
+<!--[eoform:gain]-->
+

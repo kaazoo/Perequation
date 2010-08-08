@@ -1,0 +1,18 @@
+
+3.2.4 ========
+
+* Patched rico_corner.js to no longer touch Object.prototype.extend which was causing the new version of
+  Prototype (1.5.0) to choke on making Ajax requests, quite unfortunate. This is a re-patch of the problem
+  we thought we fixed in 3.2.3.
+
+3.2.3 ========
+
+* Fixed clash between Rico and Prototype
+
+3.2.1 ========
+
+* Fixed bug with :class_name attribute being ignored
+
+3.2.0 ==========
+
+* Initial release

@@ -1,0 +1,9 @@
+<h1>Einnahme editieren</h1>
+
+<%= start_form_tag :action => 'update', :id => @gain %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'speichern' %>
+<%= end_form_tag %>
+
+<%= link_to 'Anzeigen', :action => 'show', :id => @gain %> |
+<%= link_to 'Zur&uuml;ck', :action => 'list' %>
