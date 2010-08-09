@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style type="text/css">
 
 body {
@@ -12,17 +12,38 @@ body {
 </style>
 <link href="/stylesheets/menue.css" rel="stylesheet" type="text/css" />
 <link href="/stylesheets/content.css" rel="stylesheet" type="text/css" />
+
+<script language="JavaScript">
+<!--
+
+function doLoad()
+{
+    setTimeout( "refresh()", 1000 );
+}
+
+function refresh()
+{
+    top.leftFrame.document.location = '/main/menue';
+}
+//-->
+</script>
+
 </head>
 
 
 <% if @nutzer %>
 <body>
 
-<br>
+
+
+<div align="center">
+<br /><br />
+<h1>Péréquation</h1>
+<br /><br />
 &nbsp;Sie sind eingelogt als: &nbsp;<%= @nutzer.name %>
+</div>
 
-
-<br><br>
+<br /><br />
 
 
 
@@ -40,12 +61,12 @@ body {
 <div><a class="mainmenue" href="/main/abrechnungen" target="mainFrame">Abrechnungen</a></div>
 
 <div class="mainmenue_footer" style="height:50px">&nbsp;</div>
-<div><a class="mainmenue" href="/main/logout" target="mainFrame">ausloggen</a></div>
-<br>
+<div><a class="mainmenue" href="/main/logout" target="mainFrame" onclick="doLoad();">ausloggen</a></div>
+<br />
 <!--<p><a href="/statements" target="mainFrame">Statistiken</a></p>
-<br>-->
+<br />-->
 
- <% if @nutzer.name == "Andreas" %>
+ <% if @nutzer.name == "kaazoo" %>
  <p><a href="/users" target="mainFrame">Nutzer</a></p>
  <% end %>
  
@@ -55,7 +76,7 @@ body {
 <p>bitte einloggen</p>
 
 <% end %>
-<br>
+<br />
 <!--
 &nbsp;<%= @logout_link %> 
 -->
