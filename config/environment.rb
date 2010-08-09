@@ -56,3 +56,13 @@ end
 
 require "will_paginate"
 
+
+ENV['first_user'] ||= 'kaazoo'
+ENV['second_user'] ||= 'oozaak'
+
+if ENV['first_user'] == ENV['second_user'] 
+  puts "check your configuration!"
+  exit 1
+end
+
+
