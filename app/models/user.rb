@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
   has_many :gains
   has_many :expenses
 
-  
+  cattr_reader :per_page
+  @@per_page = 30
 	
   validates_presence_of :name
   #validates_presence_of :login
