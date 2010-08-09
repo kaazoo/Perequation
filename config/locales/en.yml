@@ -1,11 +1,14 @@
 en:
- logged_in: You are logged in as
- lang: Language
- own_gains: Own gains
- all_gains: All gains
- future_gains: Future gains
- own_expenses: Own expenses
- all_expenses: All expenses
- future_expenses: Future expenses
- statements: Statements
- logout: Logout
+  logged_in: You are logged in as
+  lang: Language
+  own_gains: Own gains
+  all_gains: All gains
+  future_gains: Future gains
+  own_expenses: Own expenses
+  all_expenses: All expenses
+  future_expenses: Future expenses
+  statements: Statements
+  login: Login
+  logout: Logout
+  please_login: please log in
+  password: Password
