@@ -6,8 +6,8 @@
 </head>
 
 <frameset rows="*" cols="186,*" framespacing="0" frameborder="no" border="0">
-  <frame src="/main/menue" name="leftFrame" scrolling="No" noresize="noresize" id="leftFrame" title="leftFrame" />
-  <frame src="/gains" name="mainFrame" id="mainFrame" title="mainFrame" />
+  <frame src="/main/menue?locale=<%= params[:locale] %>" name="leftFrame" scrolling="No" noresize="noresize" id="leftFrame" title="leftFrame" />
+  <frame src="/gains?locale=<%= params[:locale] %>" name="mainFrame" id="mainFrame" title="mainFrame" />
 </frameset>
 <noframes><body>
 </body>
