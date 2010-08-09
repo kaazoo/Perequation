@@ -61,8 +61,8 @@ class MainController < ApplicationController
   
   
   # user-ids aus db holen
-  first_user_id = User.find_by_login(ENV['first_user']).id
-  second_user_id = User.find_by_login(ENV['second_user']).id
+  first_user_id = User.find_by_login(APP_CONFIG['pq_first_user']).id
+  second_user_id = User.find_by_login(APP_CONFIG['pq_second_user']).id
   
   
   @summe_einnahmen_first_user = 0
@@ -132,7 +132,7 @@ class MainController < ApplicationController
   
   # uebersicht
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,ENV['first_user'])
+  pdf.Cell(40,10,APP_CONFIG['pq_first_user'])
   pdf.Ln(5)
   pdf.SetFont('Arial','B',13)
   pdf.Cell(40,10,'Einnahmen: '+MoreMoney::Money.new(@summe_einnahmen_first_user *100, 'EUR').format(:with_thousands)+' EUR')
@@ -143,7 +143,7 @@ class MainController < ApplicationController
   pdf.Ln(20)
   
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,ENV['second_user'])
+  pdf.Cell(40,10,APP_CONFIG['pq_second_user'])
   pdf.Ln(5)
   pdf.SetFont('Arial','B',13)
   pdf.Cell(40,10,'Einnahmen: '+MoreMoney::Money.new(@summe_einnahmen_second_user *100, 'EUR').format(:with_thousands)+' EUR')
@@ -158,7 +158,7 @@ class MainController < ApplicationController
   
   # einnahmen first_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Einnahmen '+ENV['first_user'])
+  pdf.Cell(40,10,'alle Einnahmen '+APP_CONFIG['pq_first_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -195,7 +195,7 @@ class MainController < ApplicationController
   
   # einnahmen second_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Einnahmen '+ENV['second_user'])
+  pdf.Cell(40,10,'alle Einnahmen '+APP_CONFIG['pq_second_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -232,7 +232,7 @@ class MainController < ApplicationController
   
   # ausgaben first_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Ausgaben '+ENV['first_user'])
+  pdf.Cell(40,10,'alle Ausgaben '+APP_CONFIG['pq_first_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -272,7 +272,7 @@ class MainController < ApplicationController
   
   # ausgaben second_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Ausgaben '+ENV['second_user'])
+  pdf.Cell(40,10,'alle Ausgaben '+APP_CONFIG['pq_second_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -309,7 +309,7 @@ class MainController < ApplicationController
   end
 
   # pdf abspeichern
-  pdf.Output("public/abrechnung_"+dats_input+".pdf")
+  pdf.Output("public/"+APP_CONFIG['pq_pdf_prefix']+"_"+dats_input.gsub(',', '_')+".pdf")
   pdf.Ln(10)
   
   render '/main/abrechnung'
@@ -331,7 +331,7 @@ class MainController < ApplicationController
 	end
     
     # datei an nutzer schicken
-  	send_file "public/abrechnung_"+dats_input+".pdf", :filename => "abrechnung_"+dats_input+".pdf", :type => "application/pdf"
+  	send_file "public/"+APP_CONFIG['pq_pdf_prefix']+"_"+dats_input.gsub(',', '_')+".pdf", :filename => APP_CONFIG['pq_pdf_prefix']+"_"+dats_input.gsub(',', '_')+".pdf", :type => "application/pdf"
   	
   end
   

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 <%= stylesheet_link_tag 'scaffold' %>
 <%= javascript_include_tag :defaults %>
@@ -18,8 +18,8 @@
 <table cellspacing="2" cellpadding="3" class="table_input">
   <tr>
     <th>Monat</th>
-    <th>Netto-Gewinn <%= ENV['first_user'] %></th>
-    <th>Netto-Gewinn <%= ENV['second_user'] %></th>
+    <th>Netto-Gewinn <%= APP_CONFIG['pq_first_user'] %></th>
+    <th>Netto-Gewinn <%= APP_CONFIG['pq_second_user'] %></th>
     <th>Differenz / 2</th>
     <th>abgerechnet</th>
   </tr>
@@ -30,8 +30,8 @@ monat_aktuell = Date.today.month
 jahr_aktuell = Date.today.year
 
 # user-ids aus db holen
-first_user_id = User.find_by_login(ENV['first_user']).id.to_s
-second_user_id = User.find_by_login(ENV['second_user']).id.to_s
+first_user_id = User.find_by_login(APP_CONFIG['pq_first_user']).id.to_s
+second_user_id = User.find_by_login(APP_CONFIG['pq_second_user']).id.to_s
 
 einnahmen_first_user = Gain.find(:all, :conditions => ['user_id='+first_user_id+' and geloescht=? and bezahlt=?', false, true])
 ausgaben_first_user = Expense.find(:all, :conditions => ['user_id='+first_user_id+' and geloescht=? and bezahlt=?', false, true])
