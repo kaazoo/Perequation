@@ -185,7 +185,7 @@ class ExpensesController < ApplicationController
       	#puts @year.to_s+'-'+@month.to_s+'-01'
       	#puts @next_year.to_s+'-'+@next_month.to_s+'-01'
       	#puts @expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND datum = (date('"+@year.to_s+"-"+@month.to_s+"-01') + interval '1 month')"])
-      	@expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'"])
+      	@expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = ? AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'", false])
       	#@expense_pages, @expenses = paginate :expenses, :per_page => 30, :order => "datum DESC", :conditions => ["geloescht = false AND datum = (date('"+@year.to_s+"-"+@month.to_s+"-01') + interval '1 month')"]
       	#@expense_pages, @expenses = paginate :expenses, :per_page => 30, :order => "datum DESC", :conditions => ['geloescht = false AND year(datum) = '+@year.to_s+' AND month(datum) = '+@month.to_s]
       	# summe des aktuellen monats:
@@ -196,7 +196,7 @@ class ExpensesController < ApplicationController
 	  	end
         
       when "future"
-      	@expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND abgerechnet = false AND bezahlt = false AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'"])
+      	@expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = ? AND abgerechnet = ? AND bezahlt = ? AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'", false, false, false])
       	#@expense_pages, @expenses = paginate :expenses, :per_page => 30, :order => "datum DESC", :conditions => ['geloescht = false and abgerechnet = false and bezahlt = false']
       	# summe des aktuellen monats:
 	  	@future_netto = @future_brutto = 0
@@ -206,14 +206,14 @@ class ExpensesController < ApplicationController
 	  	end
         
       else
-      	@expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["user_id = "+current_user.id.to_s+" AND geloescht = false AND abgerechnet = false AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'"])
+      	@expenses = Expense.find(:all, :order => "datum DESC", :conditions => ["user_id = "+current_user.id.to_s+" AND geloescht = ? AND abgerechnet = ? AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'", false, false])
       	#@expense_pages, @expenses = paginate :expenses, :per_page => 30, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = false and abgerechnet = false']
       	
       	# summen des aktuellen monats:
       	
       	@monat_netto_bezahlt = @monat_brutto_bezahlt = 0
       	#if (@expenses_bezahlt = Expense.find(:all, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = false AND abgerechnet = false AND bezahlt = true' ])) && (@expenses_bezahlt.length > 0)
-      	if (@expenses_bezahlt = Expense.find(:all, :order => "datum DESC", :conditions => ["user_id = "+current_user.id.to_s+" AND geloescht = false AND abgerechnet = false AND bezahlt = true AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'"])) && (@expenses_bezahlt.length > 0)
+      	if (@expenses_bezahlt = Expense.find(:all, :order => "datum DESC", :conditions => ["user_id = "+current_user.id.to_s+" AND geloescht = ? AND abgerechnet = ? AND bezahlt = ? AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'", false, false, true])) && (@expenses_bezahlt.length > 0)
 		  	for expense in @expenses_bezahlt
 	          		@monat_netto_bezahlt += expense.netto
 	    	  		@monat_brutto_bezahlt += expense.brutto
@@ -222,7 +222,7 @@ class ExpensesController < ApplicationController
 	  	
 	  	@monat_netto_unbezahlt = @monat_brutto_unbezahlt = 0
 	  	#if (@expenses_unbezahlt = Expense.find(:all, :order => "datum DESC", :conditions => ['user_id = '+current_user.id.to_s+' and geloescht = false AND abgerechnet = false AND bezahlt = false' ])) && (@expenses_unbezahlt.length > 0)
-	  	if (@expenses_unbezahlt = Expense.find(:all, :order => "datum DESC", :conditions => ["user_id = "+current_user.id.to_s+" AND geloescht = false AND abgerechnet = false AND bezahlt = false AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'"])) && (@expenses_unbezahlt.length > 0)
+	  	if (@expenses_unbezahlt = Expense.find(:all, :order => "datum DESC", :conditions => ["user_id = "+current_user.id.to_s+" AND geloescht = ? AND abgerechnet = ? AND bezahlt = ? AND datum >= '"+@year.to_s+"-"+@month.to_s+"-01' AND datum < '"+@next_year.to_s+"-"+@next_month.to_s+"-01'", false, false, false])) && (@expenses_unbezahlt.length > 0)
 		  	for expense in @expenses_unbezahlt
 	          		@monat_netto_unbezahlt += expense.netto
 	    	  		@monat_brutto_unbezahlt += expense.brutto
