@@ -39,12 +39,12 @@ function refresh()
 <br /><br />
 <h1>Péréquation</h1>
 <br /><br />
-&nbsp;Sie sind eingelogt als: &nbsp;<%= @nutzer.name %>
+&nbsp; <%= t(:logged_in) %>: &nbsp;<%= @nutzer.name %>
 </div>
 
 <br /><br />
 <div align="right">
-Sprache: 
+<%= t(:lang) %>: 
 <% if params[:locale] == "en" %>
  <b><%= link_to "EN", "/?locale=en", :target => "_top" %></b>
 <% else %>
@@ -61,20 +61,20 @@ Sprache:
 </div>
 
 <div class="mainmenue_footer">&nbsp;</div>
-<div><%= link_to "eigene Einnahmen", { :controller => "gains" }, :class => "mainmenue", :target => "mainFrame" %></div>
-<div><%= link_to "alle Einnahmen", { :controller => "gains", :action => "list", :id => "all" }, :class => "mainmenue", :target => "mainFrame" %></div>
-<div><%= link_to "zu erwartende Einnahmen", { :controller => "gains", :action => "list", :id => "future" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:own_gains), { :controller => "gains" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:all_gains), { :controller => "gains", :action => "list", :id => "all" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:future_gains), { :controller => "gains", :action => "list", :id => "future" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
 <div class="mainmenue_footer">&nbsp;</div>
-<div><%= link_to "eigene Ausgaben", { :controller => "expenses" }, :class => "mainmenue", :target => "mainFrame" %></div>
-<div><%= link_to "alle Ausgaben", { :controller => "expenses", :action => "list", :id => "all" }, :class => "mainmenue", :target => "mainFrame" %></div>
-<div><%= link_to "zu erwartende Ausgaben", { :controller => "expenses", :action => "list", :id => "future" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:own_expenses), { :controller => "expenses" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:all_expenses), { :controller => "expenses", :action => "list", :id => "all" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:future_expenses), { :controller => "expenses", :action => "list", :id => "future" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
 <div class="mainmenue_footer">&nbsp;</div>
-<div><%= link_to "Abrechnungen", { :controller => "main", :action => "abrechnungen" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to t(:statements), { :controller => "main", :action => "abrechnungen" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
 <div class="mainmenue_footer" style="height:50px">&nbsp;</div>
-<div><%= link_to "ausloggen", { :controller => "main", :action => "logout" }, :target => "mainFrame" , :class => "mainmenue", :onclick => "doLoad();" %></div>
+<div><%= link_to t(:logout), { :controller => "main", :action => "logout" }, :target => "mainFrame" , :class => "mainmenue", :onclick => "doLoad();" %></div>
 
 <br />
 <!--<p><a href="/statements" target="mainFrame">Statistiken</a></p>

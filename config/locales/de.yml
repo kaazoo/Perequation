@@ -1,0 +1,11 @@
+de:
+ logged_in: Sie sind eingeloggt als
+ lang: Sprache
+ own_gains: eigene Einnahmen
+ all_gains: alle Einnahmen
+ future_gains: zu erwartende Einnahmen
+ own_expenses: eigene Ausgaben
+ all_expenses: alle Ausgaben
+ future_expenses: zu erwartende Ausgaben
+ statements: Abrechnungen
+ logout: ausloggen
