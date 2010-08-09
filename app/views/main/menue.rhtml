@@ -51,6 +51,13 @@ function refresh()
  <%= link_to "EN", "/?locale=en", :target => "_top" %>
 <% end %>
 
+<% if params[:locale] == "fr" %>
+ <b><%= link_to "FR", "/?locale=fr", :target => "_top" %></b>
+<% else %>
+ <%= link_to "FR", "/?locale=fr", :target => "_top" %>
+<% end %>
+
+
 <% if params[:locale] == "de" %>
  <b><%= link_to "DE", "/?locale=de", :target => "_top" %></b>
 <% else %>
@@ -87,7 +94,7 @@ function refresh()
 <% else %>
 <body onload="top.mainFrame.document.location = '<%= url_for(:controller => 'gains') %>'">
 
-<p>bitte einloggen</p>
+<p align="center"><%= t(:please_login) %></p>
 
 <% end %>
 <br />
