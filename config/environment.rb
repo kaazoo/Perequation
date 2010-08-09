@@ -40,6 +40,12 @@ Rails::Initializer.run do |config|
 
   config.action_controller.session = { :key => "_perequation_session", :secret => "kaniec3yeesaeph5ok7vohnah9eiv4chaijaforohb0kee6osahwohz1kai8ahchaiJaishu8no8Chu6aethahsha8yah8aj7sie" }
   
+  # The internationalization framework can be changed
+  # to have another default locale (standard is :en) or more load paths.
+  # All files from config/locales/*.rb,yml are added automatically.
+  # config.i18n.load_path << Dir[File.join(RAILS_ROOT, 'my', 'locales', '*.{rb,yml}')]
+  config.i18n.default_locale = :de
+
   # See Rails::Configuration for more options
 end
 
@@ -55,6 +61,7 @@ end
 # Include your application configuration below
 
 require "will_paginate"
+#require "german_date_names"
 require "yaml"
 
 if APP_CONFIG = YAML.load_file("#{RAILS_ROOT}/config/perequation.yml")
