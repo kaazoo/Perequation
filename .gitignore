@@ -4,3 +4,4 @@ doc/api
 doc/app
 public/abrechnung_*.pdf
 config/database.yml
+db/development.sqlite3
