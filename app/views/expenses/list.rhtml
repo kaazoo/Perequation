@@ -111,22 +111,3 @@ Summe unbezahlt: <%= MoreMoney::Money.new(@monat_netto_unbezahlt * 100, 'EUR').f
 <% if (params[:id] != "all") && (params[:id] != "future") %>
 <%= link_to 'Neue Ausgabe', :action => 'new' %>
 <% end %>
-
-<!--
-<%= submit_tag 'Auswahl aufsummieren', :name => 'which_action', :onclick => "Form.getInputs(this.form, 'submit').each(function(x) { if (x.value != this.value) {x.name += '_'; x.disabled=true} }.bind(this))" %>
--->
-
-<!--
-<% if params[:id] == "all" %>
-  <%= submit_tag 'Auswahl abrechnen', :name => 'which_action', :onclick => "Form.getInputs(this.form, 'submit').each(function(x) { if (x.value != this.value) {x.name += '_'; x.disabled=true} }.bind(this))" %>
-<% end %>
-
-
-<%= end_form_tag %>
-
-<br>
-
-<div id="div_summe"></div>
-
-<br>
--->
