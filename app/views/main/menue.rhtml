@@ -44,7 +44,20 @@ function refresh()
 
 <br /><br />
 <div align="right">
-Sprache: <%= link_to "EN", "/?locale=en", :target => "_top" %> <%= link_to "DE", "/?locale=de", :target => "_top" %> &nbsp;&nbsp;
+Sprache: 
+<% if params[:locale] == "en" %>
+ <b><%= link_to "EN", "/?locale=en", :target => "_top" %></b>
+<% else %>
+ <%= link_to "EN", "/?locale=en", :target => "_top" %>
+<% end %>
+
+<% if params[:locale] == "de" %>
+ <b><%= link_to "DE", "/?locale=de", :target => "_top" %></b>
+<% else %>
+ <%= link_to "DE", "/?locale=de", :target => "_top" %>
+<% end %>
+
+&nbsp;&nbsp;
 </div>
 
 <div class="mainmenue_footer">&nbsp;</div>
