@@ -23,7 +23,7 @@ function doLoad()
 
 function refresh()
 {
-    top.leftFrame.document.location = '/main/menue';
+    top.leftFrame.document.location = '<%= url_for(:controller => "main", :action => "menue") %>';
 }
 //-->
 </script>
@@ -35,7 +35,6 @@ function refresh()
 <body>
 
 
-
 <div align="center">
 <br /><br />
 <h1>Péréquation</h1>
@@ -45,23 +44,22 @@ function refresh()
 
 <br /><br />
 
-
+<div class="mainmenue_footer">&nbsp;</div>
+<div><%= link_to "eigene Einnahmen", { :controller => "gains" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to "alle Einnahmen", { :controller => "gains", :action => "list", :id => "all" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to "zu erwartende Einnahmen", { :controller => "gains", :action => "list", :id => "future" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
 <div class="mainmenue_footer">&nbsp;</div>
-<div><a class="mainmenue" href="/gains" target="mainFrame">eigene Einnahmen</a></div>
-<div><a class="mainmenue" href="/gains/list/all" target="mainFrame">alle Einnahmen</a></div>
-<div><a class="mainmenue" href="/gains/list/future" target="mainFrame">zu erwartende Einnahmen</a></div>
+<div><%= link_to "eigene Ausgaben", { :controller => "expenses" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to "alle Ausgaben", { :controller => "expenses", :action => "list", :id => "all" }, :class => "mainmenue", :target => "mainFrame" %></div>
+<div><%= link_to "zu erwartende Ausgaben", { :controller => "expenses", :action => "list", :id => "future" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
 <div class="mainmenue_footer">&nbsp;</div>
-<div><a class="mainmenue" href="/expenses" target="mainFrame">eigene Ausgaben</a></div>
-<div><a class="mainmenue" href="/expenses/list/all" target="mainFrame">alle Ausgaben</a></div>
-<div><a class="mainmenue" href="/expenses/list/future" target="mainFrame">zu erwartende Ausgaben</a></div>
-
-<div class="mainmenue_footer">&nbsp;</div>
-<div><a class="mainmenue" href="/main/abrechnungen" target="mainFrame">Abrechnungen</a></div>
+<div><%= link_to "Abrechnungen", { :controller => "main", :action => "abrechnungen" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
 <div class="mainmenue_footer" style="height:50px">&nbsp;</div>
-<div><a class="mainmenue" href="/main/logout" target="mainFrame" onclick="doLoad();">ausloggen</a></div>
+<div><%= link_to "ausloggen", { :controller => "main", :action => "logout" }, :target => "mainFrame" , :class => "mainmenue", :onclick => "doLoad();" %></div>
+
 <br />
 <!--<p><a href="/statements" target="mainFrame">Statistiken</a></p>
 <br />-->
@@ -71,14 +69,12 @@ function refresh()
  <% end %>
  
 <% else %>
-<body onload="top.mainFrame.document.location = '/gains'">
+<body onload="top.mainFrame.document.location = '<%= url_for(:controller => 'gains') %>'">
 
 <p>bitte einloggen</p>
 
 <% end %>
 <br />
-<!--
-&nbsp;<%= @logout_link %> 
--->
+
 </body>
 </html>
