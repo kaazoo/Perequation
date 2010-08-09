@@ -1,0 +1,11 @@
+# Péréquation comfig file
+
+# account names of business partners
+pq_first_user: 'kaazoo'
+pq_second_user: 'oozaak'
+
+# pdf prefix
+pq_pdf_prefix: 'abrechnung'
+
+
+

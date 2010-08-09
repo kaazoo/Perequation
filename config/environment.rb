@@ -55,14 +55,17 @@ end
 # Include your application configuration below
 
 require "will_paginate"
+require "yaml"
 
-
-ENV['first_user'] ||= 'kaazoo'
-ENV['second_user'] ||= 'oozaak'
-
-if ENV['first_user'] == ENV['second_user'] 
-  puts "check your configuration!"
-  exit 1
+if APP_CONFIG = YAML.load_file("#{RAILS_ROOT}/config/perequation.yml")
+  puts "** Péréquation config loaded."
+else
+  puts "** Could not load Péréquation config!"
+  exit(1)
 end
 
+if APP_CONFIG['pq_first_user'] == APP_CONFIG['pq_second_user']
+  puts "** Check your configuration!"
+  exit 1
+end
 
