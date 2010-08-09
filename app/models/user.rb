@@ -1,5 +1,3 @@
-#require 'ajax_scaffold'
-
 require 'digest/sha1'
 class User < ActiveRecord::Base
 
