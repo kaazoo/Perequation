@@ -2,6 +2,9 @@
 
 This is a software to manage revenue sharing between two business partners.
 
+Péréquation needs the RubyGems 'more_money', 'fpdf' and 'will_paginate'.
+It includes the Rails plugins 'acts_as_authenticated' and 'render_component'.
+
 
 == License ==
 
