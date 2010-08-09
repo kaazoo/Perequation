@@ -20,25 +20,25 @@ Alle Werte sind in Netto.
 
 <br /><br /><br />
 
-<b>Hans</b><br>
-Einnahmen: <%= MoreMoney::Money.new(@summe_einnahmen_hans *100, 'EUR').format(:with_thousands) %> EUR<br />
-Ausgaben: <%= MoreMoney::Money.new(@summe_ausgaben_hans *100, 'EUR').format(:with_thousands) %> EUR<br />
-Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_hans *100, 'EUR').format(:with_thousands) %> EUR<br />
+<b><%= ENV['first_user'] %></b><br>
+Einnahmen: <%= MoreMoney::Money.new(@summe_einnahmen_first_user *100, 'EUR').format(:with_thousands) %> EUR<br />
+Ausgaben: <%= MoreMoney::Money.new(@summe_ausgaben_first_user *100, 'EUR').format(:with_thousands) %> EUR<br />
+Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_first_user *100, 'EUR').format(:with_thousands) %> EUR<br />
 
 <br />
 
-<b>Max</b><br>
-Einnahmen: <%= MoreMoney::Money.new(@summe_einnahmen_max *100, 'EUR').format(:with_thousands) %> EUR<br />
-Ausgaben: <%= MoreMoney::Money.new(@summe_ausgaben_max *100, 'EUR').format(:with_thousands) %> EUR<br />
-Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_thousands) %> EUR<br />
+<b><%= ENV['second_user'] %></b><br>
+Einnahmen: <%= MoreMoney::Money.new(@summe_einnahmen_second_user *100, 'EUR').format(:with_thousands) %> EUR<br />
+Ausgaben: <%= MoreMoney::Money.new(@summe_ausgaben_second_user *100, 'EUR').format(:with_thousands) %> EUR<br />
+Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_second_user *100, 'EUR').format(:with_thousands) %> EUR<br />
 
 <br /><br />
 
-<b>Differenz:</b> <%= MoreMoney::Money.new( ((@summe_gewinn_hans - @summe_gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %> EUR<br />
+<b>Differenz:</b> <%= MoreMoney::Money.new( ((@summe_gewinn_first_user - @summe_gewinn_second_user).abs / 2) *100, 'EUR').format(:with_thousands) %> EUR<br />
 
 <br /><br />
 
-<b>alle Einnahmen Hans</b>
+<b>alle Einnahmen <%= ENV['first_user'] %></b>
 
 <table cellspacing="2" cellpadding="3" class="table_input">
   <tr align="left">
@@ -50,7 +50,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
   <th>Eintragsdatum</th>
   </tr>
   
-<% for gain in @gains_hans %>
+<% for gain in @gains_first_user %>
   <tr>
   <% 
   for column in Gain.content_columns
@@ -90,7 +90,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
 
 <br /><br /><br />
 
-<b>alle Einnahmen Max</b>
+<b>alle Einnahmen <%= ENV['second_user'] %></b>
 
 <table cellspacing="2" cellpadding="3" class="table_input">
   <tr align="left">
@@ -102,7 +102,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
   <th>Eintragsdatum</th>
   </tr>
   
-<% for gain in @gains_max %>
+<% for gain in @gains_second_user %>
   <tr>
   <% 
   for column in Gain.content_columns
@@ -143,7 +143,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
 
 <br /><br /><br />
 
-<b>alle Ausgaben Hans</b>
+<b>alle Ausgaben <%= ENV['first_user'] %></b>
 
 <table cellspacing="2" cellpadding="3" class="table_input">
   <tr align="left">
@@ -156,7 +156,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
   <th>Eintragsdatum</th>
   </tr>
   
-<% for expense in @expenses_hans %>
+<% for expense in @expenses_first_user %>
   <tr>
   <% 
   for column in Expense.content_columns
@@ -195,7 +195,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
 
 <br /><br /><br />
 
-<b>alle Ausgaben Max</b>
+<b>alle Ausgaben <%= ENV['second_user'] %></b>
 
 <table cellspacing="2" cellpadding="3" class="table_input">
   <tr align="left">
@@ -208,7 +208,7 @@ Gewinn: <%= MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_tho
   <th>Eintragsdatum</th>
   </tr>
   
-<% for expense in @expenses_max %>
+<% for expense in @expenses_second_user %>
   <tr>
   <% 
   for column in Expense.content_columns

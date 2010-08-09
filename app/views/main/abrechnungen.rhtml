@@ -18,8 +18,8 @@
 <table cellspacing="2" cellpadding="3" class="table_input">
   <tr>
     <th>Monat</th>
-    <th>Netto-Gewinn Max</th>
-    <th>Netto-Gewinn Hans</th>
+    <th>Netto-Gewinn <%= ENV['first_user'] %></th>
+    <th>Netto-Gewinn <%= ENV['second_user'] %></th>
     <th>Differenz / 2</th>
     <th>abgerechnet</th>
   </tr>
@@ -30,13 +30,13 @@ monat_aktuell = Date.today.month
 jahr_aktuell = Date.today.year
 
 # user-ids aus db holen
-user_max = User.find_by_login('max').id.to_s
-user_hans = User.find_by_login('hans').id.to_s
+first_user_id = User.find_by_login(ENV['first_user']).id.to_s
+second_user_id = User.find_by_login(ENV['second_user']).id.to_s
 
-einnahmen_max = Gain.find(:all, :conditions => ['user_id='+user_max+' and geloescht=false and bezahlt=true'])
-ausgaben_max = Expense.find(:all, :conditions => ['user_id='+user_max+' and geloescht=false and bezahlt=true'])
-einnahmen_hans = Gain.find(:all, :conditions => ['user_id='+user_hans+' and geloescht=false and bezahlt=true'])
-ausgaben_hans = Expense.find(:all, :conditions => ['user_id='+user_hans+' and geloescht=false and bezahlt=true'])
+einnahmen_first_user = Gain.find(:all, :conditions => ['user_id='+first_user_id+' and geloescht=? and bezahlt=?', false, true])
+ausgaben_first_user = Expense.find(:all, :conditions => ['user_id='+first_user_id+' and geloescht=? and bezahlt=?', false, true])
+einnahmen_second_user = Gain.find(:all, :conditions => ['user_id='+second_user_id+' and geloescht=? and bezahlt=?', false, true])
+ausgaben_second_user = Expense.find(:all, :conditions => ['user_id='+second_user_id+' and geloescht=? and bezahlt=?', false, true])
 
 monat_aktuell.downto(1) do |x|
   dat = Date.strptime(jahr_aktuell.to_s + '-' + x.to_s + '-' + '01')
@@ -46,36 +46,36 @@ monat_aktuell.downto(1) do |x|
     dat_end = Date.strptime(jahr_aktuell.to_s + '-' + (x + 1).to_s + '-' + '01')
   end
   
-  summe_einnahmen_max = 0
-  einnahmen_max.each do |j|
+  summe_einnahmen_first_user = 0
+  einnahmen_first_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_einnahmen_max += j.netto
+      summe_einnahmen_first_user += j.netto
     end
   end
   
-  summe_ausgaben_max = 0
-  ausgaben_max.each do |j|
+  summe_ausgaben_first_user = 0
+  ausgaben_first_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_ausgaben_max += j.netto
+      summe_ausgaben_first_user += j.netto
     end
   end
   
-  summe_einnahmen_hans = 0
-  einnahmen_hans.each do |j|
+  summe_einnahmen_second_user = 0
+  einnahmen_second_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_einnahmen_hans += j.netto
+      summe_einnahmen_second_user += j.netto
     end
   end
   
-  summe_ausgaben_hans = 0
-  ausgaben_hans.each do |j|
+  summe_ausgaben_second_user = 0
+  ausgaben_second_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_ausgaben_hans += j.netto
+      summe_ausgaben_second_user += j.netto
     end
   end
   
-  gewinn_max = summe_einnahmen_max - summe_ausgaben_max
-  gewinn_hans = summe_einnahmen_hans - summe_ausgaben_hans
+  gewinn_first_user = summe_einnahmen_first_user - summe_ausgaben_first_user
+  gewinn_second_user = summe_einnahmen_second_user - summe_ausgaben_second_user
   
   %>
   <% if Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
@@ -84,9 +84,9 @@ monat_aktuell.downto(1) do |x|
     <tr>
   <% end %>
    <td><%= dat.strftime("%B %Y") %></td>
-   <td><%= MoreMoney::Money.new(gewinn_max *100, 'EUR').format(:with_thousands) %></td>
-   <td><%= MoreMoney::Money.new(gewinn_hans *100, 'EUR').format(:with_thousands) %></td>
-   <td><%= MoreMoney::Money.new( ((gewinn_hans - gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new(gewinn_first_user *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new(gewinn_second_user *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new( ((gewinn_second_user - gewinn_first_user).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
    <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
      <td><%= abr.erstellungsdatum.strftime("%d. %B %Y") %></td> 
    <% else %>
@@ -110,36 +110,36 @@ if @erstes_jahr < jahr_aktuell
       dat_end = Date.strptime(x.to_s + '-' + (y + 1).to_s + '-' + '01')
     end
     
-    summe_einnahmen_max = 0
-    einnahmen_max.each do |j|
+    summe_einnahmen_first_user = 0
+    einnahmen_first_user.each do |j|
       if (j.datum >= dat) && (j.datum < dat_end)
-        summe_einnahmen_max += j.netto
+        summe_einnahmen_first_user += j.netto
       end
     end
   
-    summe_ausgaben_max = 0
-    ausgaben_max.each do |j|
+    summe_ausgaben_first_user = 0
+    ausgaben_first_user.each do |j|
       if (j.datum >= dat) && (j.datum < dat_end)
-        summe_ausgaben_max += j.netto
+        summe_ausgaben_first_user += j.netto
       end
     end
   
-    summe_einnahmen_hans = 0
-    einnahmen_hans.each do |j|
+    summe_einnahmen_second_user = 0
+    einnahmen_second_user.each do |j|
       if (j.datum >= dat) && (j.datum < dat_end)
-        summe_einnahmen_hans += j.netto
+        summe_einnahmen_second_user += j.netto
       end
     end
   
-    summe_ausgaben_hans = 0
-    ausgaben_hans.each do |j|
+    summe_ausgaben_second_user = 0
+    ausgaben_second_user.each do |j|
       if (j.datum >= dat) && (j.datum < dat_end)
-        summe_ausgaben_hans += j.netto
+        summe_ausgaben_second_user += j.netto
       end
     end
   
-    gewinn_max = summe_einnahmen_max - summe_ausgaben_max
-    gewinn_hans = summe_einnahmen_hans - summe_ausgaben_hans
+    gewinn_first_user = summe_einnahmen_first_user - summe_ausgaben_first_user
+    gewinn_second_user = summe_einnahmen_second_user - summe_ausgaben_second_user
     
     %>
     <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
@@ -148,9 +148,9 @@ if @erstes_jahr < jahr_aktuell
       <tr>
     <% end %>
      <td><%= dat.strftime("%B %Y") %></td>
-     <td><%= MoreMoney::Money.new(gewinn_max *100, 'EUR').format(:with_thousands) %></td>
-     <td><%= MoreMoney::Money.new(gewinn_hans *100, 'EUR').format(:with_thousands) %></td>
-     <td><%= MoreMoney::Money.new( ((gewinn_hans - gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
+     <td><%= MoreMoney::Money.new(gewinn_first_user *100, 'EUR').format(:with_thousands) %></td>
+     <td><%= MoreMoney::Money.new(gewinn_second_user *100, 'EUR').format(:with_thousands) %></td>
+     <td><%= MoreMoney::Money.new( ((gewinn_second_user - gewinn_first_user).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
      <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
        <td><%= abr.erstellungsdatum.strftime("%d. %B %Y") %></td> 
      <% else %>
@@ -169,36 +169,36 @@ end
     dat_end = Date.strptime(@erstes_jahr.to_s + '-' + (x + 1).to_s + '-' + '01')
   end
   
-  summe_einnahmen_max = 0
-  einnahmen_max.each do |j|
+  summe_einnahmen_first_user = 0
+  einnahmen_first_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_einnahmen_max += j.netto
+      summe_einnahmen_first_user += j.netto
     end
   end
   
-  summe_ausgaben_max = 0
-  ausgaben_max.each do |j|
+  summe_ausgaben_first_user = 0
+  ausgaben_first_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_ausgaben_max += j.netto
+      summe_ausgaben_first_user += j.netto
     end
   end
   
-  summe_einnahmen_hans = 0
-  einnahmen_hans.each do |j|
+  summe_einnahmen_second_user = 0
+  einnahmen_second_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_einnahmen_hans += j.netto
+      summe_einnahmen_second_user += j.netto
     end
   end
   
-  summe_ausgaben_hans = 0
-  ausgaben_hans.each do |j|
+  summe_ausgaben_second_user = 0
+  ausgaben_second_user.each do |j|
     if (j.datum >= dat) && (j.datum < dat_end)
-      summe_ausgaben_hans += j.netto
+      summe_ausgaben_second_user += j.netto
     end
   end
   
-  gewinn_max = summe_einnahmen_max - summe_ausgaben_max
-  gewinn_hans = summe_einnahmen_hans - summe_ausgaben_hans
+  gewinn_first_user = summe_einnahmen_first_user - summe_ausgaben_first_user
+  gewinn_second_user = summe_einnahmen_second_user - summe_ausgaben_second_user
   
 
   %>
@@ -208,9 +208,9 @@ end
     <tr>
   <% end %>
    <td><%= dat.strftime("%B %Y") %></td>
-   <td><%= MoreMoney::Money.new(gewinn_max *100, 'EUR').format(:with_thousands) %></td>
-   <td><%= MoreMoney::Money.new(gewinn_hans *100, 'EUR').format(:with_thousands) %></td>
-   <td><%= MoreMoney::Money.new( ((gewinn_hans - gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new(gewinn_first_user *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new(gewinn_second_user *100, 'EUR').format(:with_thousands) %></td>
+   <td><%= MoreMoney::Money.new( ((gewinn_second_user - gewinn_first_user).abs / 2) *100, 'EUR').format(:with_thousands) %></td>
    <% if abr = Statement.find_by_name(dat.to_s + ',' + dat_end.to_s) %>
      <td><%= abr.erstellungsdatum.strftime("%d. %B %Y") %></td> 
    <% else %>

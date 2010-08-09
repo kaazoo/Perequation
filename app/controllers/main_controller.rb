@@ -33,8 +33,8 @@ class MainController < ApplicationController
   end
 	
   def abrechnungen
-    erste_einnahme = Gain.find(:first, :order => "datum ASC", :conditions => ['geloescht = false']).datum
-    erste_ausgabe = Expense.find(:first, :order => "datum ASC", :conditions => ['geloescht = false']).datum
+    erste_einnahme = Gain.find(:first, :order => "datum ASC", :conditions => ['geloescht = ?', false]).datum
+    erste_ausgabe = Expense.find(:first, :order => "datum ASC", :conditions => ['geloescht = ?', false]).datum
     
     if erste_einnahme < erste_ausgabe
       min = erste_einnahme
@@ -61,56 +61,57 @@ class MainController < ApplicationController
   
   
   # user-ids aus db holen
-  user_max = User.find_by_login('max').id.to_s
-  user_hans = User.find_by_login('hans').id.to_s
+  first_user_id = User.find_by_login(ENV['first_user']).id
+  second_user_id = User.find_by_login(ENV['second_user']).id
   
-  @summe_einnahmen_hans = 0
-  @summe_einnahmen_max = 0
+  
+  @summe_einnahmen_first_user = 0
+  @summe_einnahmen_second_user = 0
   
   # alle einnahmen im zeitraum abrechnen und summen bilden
-  abr_einnahmen = Gain.find(:all, :conditions => ['geloescht=false and bezahlt=true'])
+  abr_einnahmen = Gain.find(:all, :conditions => ['geloescht=? and bezahlt=?', false, true])
   abr_einnahmen.each do |x|
     if (x.datum >= dat) && (x.datum < dat_end)
       x.abgerechnet = true
       x.save
-      if x.user_id == user_hans.to_i
-  	  	@summe_einnahmen_hans += x.netto
+      if x.user_id == first_user_id
+  	  	@summe_einnahmen_first_user += x.netto
   	  end
-  	  if x.user_id == user_max.to_i
-  	  	@summe_einnahmen_max += x.netto
+      if x.user_id == second_user_id
+  	  	@summe_einnahmen_second_user += x.netto
   	  end
     end
   end 
     
   
-  @summe_ausgaben_hans = 0
-  @summe_ausgaben_max = 0
+  @summe_ausgaben_first_user = 0
+  @summe_ausgaben_second_user = 0
   
   # alle ausgaben im zeitraum abrechnen und summen bilden
-  abr_ausgaben = Expense.find(:all, :conditions => ['geloescht=false and bezahlt=true'])
+  abr_ausgaben = Expense.find(:all, :conditions => ['geloescht=? and bezahlt=?', false, true])
   abr_ausgaben.each do |x|
     if (x.datum >= dat) && (x.datum < dat_end)
       x.abgerechnet = true
       x.save
-      if x.user_id == user_hans.to_i
-  	  	@summe_ausgaben_hans += x.netto
+      if x.user_id == first_user_id
+  	  	@summe_ausgaben_first_user += x.netto
   	  end
-  	  if x.user_id == user_max.to_i
-  	  	@summe_ausgaben_max += x.netto
+  	  if x.user_id == second_user_id
+  	  	@summe_ausgaben_second_user += x.netto
   	  end
     end
   end  
 
   
   # gewinne
-  @summe_gewinn_hans = @summe_einnahmen_hans - @summe_ausgaben_hans
-  @summe_gewinn_max = @summe_einnahmen_max - @summe_ausgaben_max
+  @summe_gewinn_first_user = @summe_einnahmen_first_user - @summe_ausgaben_first_user
+  @summe_gewinn_second_user = @summe_einnahmen_second_user - @summe_ausgaben_second_user
   
-  @expenses_hans = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND bezahlt = true AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+user_hans])
-  @expenses_max = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND bezahlt = true AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+user_max])
+  @expenses_first_user = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = ? AND bezahlt = ? AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+first_user_id.to_s, false, true])
+  @expenses_second_user = Expense.find(:all, :order => "datum DESC", :conditions => ["geloescht = ? AND bezahlt = ? AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+second_user_id.to_s, false, true])
   
-  @gains_hans = Gain.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND bezahlt = true AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+user_hans])
-  @gains_max = Gain.find(:all, :order => "datum DESC", :conditions => ["geloescht = false AND bezahlt = true AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+user_max])
+  @gains_first_user = Gain.find(:all, :order => "datum DESC", :conditions => ["geloescht = ? AND bezahlt = ? AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+first_user_id.to_s, false, true])
+  @gains_second_user = Gain.find(:all, :order => "datum DESC", :conditions => ["geloescht = ? AND bezahlt = ? AND datum >= '"+dat.to_s+"' AND datum < '"+dat_end.to_s+"' AND user_id = "+second_user_id.to_s, false, true])
     
   # neue abrechnung erstellen
   # ERSTMA NICH
@@ -131,33 +132,33 @@ class MainController < ApplicationController
   
   # uebersicht
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'Hans')
+  pdf.Cell(40,10,ENV['first_user'])
   pdf.Ln(5)
   pdf.SetFont('Arial','B',13)
-  pdf.Cell(40,10,'Einnahmen: '+MoreMoney::Money.new(@summe_einnahmen_hans *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Einnahmen: '+MoreMoney::Money.new(@summe_einnahmen_first_user *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(5)
-  pdf.Cell(40,10,'Ausgaben: '+MoreMoney::Money.new(@summe_ausgaben_hans *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Ausgaben: '+MoreMoney::Money.new(@summe_ausgaben_first_user *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(5)
-  pdf.Cell(40,10,'Gewinn: '+MoreMoney::Money.new(@summe_gewinn_hans *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Gewinn: '+MoreMoney::Money.new(@summe_gewinn_first_user *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(20)
   
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'Max')
+  pdf.Cell(40,10,ENV['second_user'])
   pdf.Ln(5)
   pdf.SetFont('Arial','B',13)
-  pdf.Cell(40,10,'Einnahmen: '+MoreMoney::Money.new(@summe_einnahmen_max *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Einnahmen: '+MoreMoney::Money.new(@summe_einnahmen_second_user *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(5)
-  pdf.Cell(40,10,'Ausgaben: '+MoreMoney::Money.new(@summe_ausgaben_max *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Ausgaben: '+MoreMoney::Money.new(@summe_ausgaben_second_user *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(5)
-  pdf.Cell(40,10,'Gewinn: '+MoreMoney::Money.new(@summe_gewinn_max *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Gewinn: '+MoreMoney::Money.new(@summe_gewinn_second_user *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(20)
   
-  pdf.Cell(40,10,'Differenz: '+MoreMoney::Money.new( ((@summe_gewinn_hans - @summe_gewinn_max).abs / 2) *100, 'EUR').format(:with_thousands)+' EUR')
+  pdf.Cell(40,10,'Differenz: '+MoreMoney::Money.new( ((@summe_gewinn_first_user - @summe_gewinn_second_user).abs / 2) *100, 'EUR').format(:with_thousands)+' EUR')
   pdf.Ln(20)
   
-  # einnahmen hans
+  # einnahmen first_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Einnahmen Hans')
+  pdf.Cell(40,10,'alle Einnahmen '+ENV['first_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -171,7 +172,7 @@ class MainController < ApplicationController
   
   pdf.Ln()
   
-  @gains_hans.each do |gain| 
+  @gains_first_user.each do |gain| 
 	    pdf.Cell(45, 6, gain.name, 1)
 	    
 	    old_date = gain.datum.to_s
@@ -192,9 +193,9 @@ class MainController < ApplicationController
   
   pdf.Ln(20)
   
-  # einnahmen max
+  # einnahmen second_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Einnahmen Max')
+  pdf.Cell(40,10,'alle Einnahmen '+ENV['second_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -208,7 +209,7 @@ class MainController < ApplicationController
   
   pdf.Ln()
   
-  @gains_max.each do |gain| 
+  @gains_second_user.each do |gain| 
 	    pdf.Cell(45, 6, gain.name, 1)
 	    
 	    old_date = gain.datum.to_s
@@ -229,9 +230,9 @@ class MainController < ApplicationController
   
   pdf.Ln(20)
   
-  # ausgaben hans
+  # ausgaben first_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Ausgaben')
+  pdf.Cell(40,10,'alle Ausgaben '+ENV['first_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -246,7 +247,7 @@ class MainController < ApplicationController
   
   pdf.Ln()
   
-  @expenses_hans.each do |expense| 
+  @expenses_first_user.each do |expense| 
 	    pdf.Cell(45, 6, expense.name, 1)
 	    
 	    old_date = expense.datum.to_s
@@ -269,9 +270,9 @@ class MainController < ApplicationController
   
   pdf.Ln(20)
   
-  # ausgaben max
+  # ausgaben second_user
   pdf.SetFont('Arial','B',14)
-  pdf.Cell(40,10,'alle Ausgaben')
+  pdf.Cell(40,10,'alle Ausgaben '+ENV['second_user'])
   pdf.Ln(10)
   pdf.SetFont('Arial','B',11)
   
@@ -286,7 +287,7 @@ class MainController < ApplicationController
   
   pdf.Ln()
   
-  @expenses_max.each do |expense| 
+  @expenses_second_user.each do |expense| 
 	    pdf.Cell(45, 6, expense.name, 1)
 	    
 	    old_date = expense.datum.to_s
@@ -321,12 +322,12 @@ class MainController < ApplicationController
     dats_input = CGI::unescape(params[:id])
     
     # anpassung an browser   
-    if @request.env['HTTP_USER_AGENT'] =~ /msie/i
-		@headers['Pragma'] = ''
-		@headers['Cache-Control'] = ''
+    if request.env['HTTP_USER_AGENT'] =~ /msie/i
+		headers['Pragma'] = ''
+		headers['Cache-Control'] = ''
 	else
-		@headers['Pragma'] = 'no-cache'
-		@headers['Cache-Control'] = 'no-cache, must-revalidate'
+		headers['Pragma'] = 'no-cache'
+		headers['Cache-Control'] = 'no-cache, must-revalidate'
 	end
     
     # datei an nutzer schicken
