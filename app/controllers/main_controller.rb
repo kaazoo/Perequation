@@ -373,7 +373,7 @@ class MainController < ApplicationController
   end
 
 
-  def statistics
+  def statistic_month
   
     if params[:date] == nil
       # start with last month 
@@ -395,6 +395,23 @@ class MainController < ApplicationController
     @year_next = mydate.next_month.year
   
   end
+  
+  def statistic_year
+  
+    if params[:year] == nil
+      mydate = Date.today
+      @startyear = mydate.year
+    else
+      @startyear = params[:year].to_i
+    end
+        
+    # one year earlier
+    @year_before = @startyear - 1
+    
+    # one year after
+    @year_next = @startyear + 1
+  
+  end
 
 	
   def render_graph
@@ -402,39 +419,79 @@ class MainController < ApplicationController
     month = params[:m].to_i
     year = params[:y].to_i
     
-    # get number of days in month
-    puts numdays = Time::days_in_month(month, year)
+    if (month > 0) && (year > 0)
+      # get number of days in month
+      numdays = Time::days_in_month(month, year)
     
-    # generate arrays for month
-    gains_arr = Array.new(numdays)
-    gains_arr.fill(0)
-    expenses_arr = Array.new(numdays)
-    expenses_arr.fill(0)
+      # generate arrays for month
+      gains_arr = Array.new(numdays)
+      gains_arr.fill(0)
+      expenses_arr = Array.new(numdays)
+      expenses_arr.fill(0)
     
-    first_day = year.to_s+"-"+month.to_s+"-01"
-    last_day = year.to_s+"-"+month.to_s+"-"+numdays.to_s
+      # first and last day of month
+      first_day = year.to_s+"-"+month.to_s+"-01"
+      last_day = year.to_s+"-"+month.to_s+"-"+numdays.to_s
     
-    gains = Gain.find(:all, :conditions => { :datum => first_day..last_day })
-    gains.each do |gain|
-      datum = Date.parse(gain[:datum].to_s)
-      gains_arr[datum.day] += gain[:netto]
+      # add gains to array
+      gains = Gain.find(:all, :conditions => { :datum => first_day..last_day })
+      gains.each do |gain|
+        datum = Date.parse(gain[:datum].to_s)
+        gains_arr[datum.day] += gain[:netto]
+      end
+    
+      # add expenses to array
+      expenses = Expense.find(:all, :conditions => { :datum => first_day..last_day })
+      expenses.each do |expense|
+        datum = Date.parse(expense[:datum].to_s)
+        expenses_arr[datum.day] += expense[:netto]
+      end
+    
+      # render graph
+      graph = Scruffy::Graph.new
+      graph.title = Date::MONTHNAMES[month].to_s+" "+year.to_s
+      graph.add(:line, t(:gains), gains_arr)
+      graph.add(:line, t(:expenses), expenses_arr)
+            
+    elsif (month = 0) && (year > 0)
+      # number of weeks in year
+      numdays = 53
+      
+      # generate arrays for year
+      gains_arr = Array.new(numdays)
+      gains_arr.fill(0)
+      expenses_arr = Array.new(numdays)
+      expenses_arr.fill(0)
+      
+      # first and last day of year
+      first_day = year.to_s+"-01-01"
+      last_day = year.to_s+"-12-31"
+    
+      # add gains to array
+      gains = Gain.find(:all, :conditions => { :datum => first_day..last_day })
+      gains.each do |gain|
+        datum = Date.parse(gain[:datum].to_s)
+        week_of_year = datum.strftime("%W").to_i
+        gains_arr[week_of_year] += gain[:netto]
+      end
+    
+      # add expenses to array
+      expenses = Expense.find(:all, :conditions => { :datum => first_day..last_day })
+      expenses.each do |expense|
+        datum = Date.parse(expense[:datum].to_s)
+        week_of_year = datum.strftime("%W").to_i
+        expenses_arr[week_of_year] += expense[:netto]
+      end
+    
+      # render graph
+      graph = Scruffy::Graph.new
+      graph.title = year.to_s
+      graph.add(:line, t(:gains), gains_arr)
+      graph.add(:line, t(:expenses), expenses_arr)   
+      
     end
     
-    expenses = Expense.find(:all, :conditions => { :datum => first_day..last_day })
-    expenses.each do |expense|
-      datum = Date.parse(expense[:datum].to_s)
-      expenses_arr[datum.day] += expense[:netto]
-    end
-
-    puts gains_list = gains_arr.join(',')
-    puts expenses_list = expenses_arr.join(',')
-     
-    graph = Scruffy::Graph.new
-    graph.title = Date::MONTHNAMES[month].to_s+" "+year.to_s
-    graph.add(:line, t(:gains), gains_arr)
-    graph.add(:line, t(:expenses), expenses_arr)
-
-	graph_blob = graph.render :size => [600,400], :as => 'PNG'
+    graph_blob = graph.render :size => [900,500], :as => 'PNG'
     send_data graph_blob, :filename => 'graph.png', :type => 'image/png', :disposition => 'inline'
  
   end

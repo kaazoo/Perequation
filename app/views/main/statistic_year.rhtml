@@ -1,0 +1,13 @@
+
+
+<%= image_tag url_for(:controller => "main", :action => "render_graph", :m => @startmonth, :y => @startyear), :id => "stats" %>
+
+
+<br /><br /><br />
+
+<%= link_to t(:year_earlier),  { :controller => "main", :action => "statistic_year", :year => @year_before }, :target => "mainFrame" , :class => "mainmenue" %> 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<%= link_to t(:year_later),  { :controller => "main", :action => "statistic_year", :year => @year_next }, :target => "mainFrame" , :class => "mainmenue" %> 
+
