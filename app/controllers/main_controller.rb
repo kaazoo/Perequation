@@ -350,6 +350,7 @@ class MainController < ApplicationController
     end
   end
 
+
   def signup
     @user = User.new(params[:user])
     return unless request.post?
@@ -361,6 +362,7 @@ class MainController < ApplicationController
     render :action => 'signup'
   end
   
+  
   def logout
     self.current_user.forget_me if logged_in?
     cookies.delete :auth_token
@@ -369,6 +371,74 @@ class MainController < ApplicationController
     redirect_back_or_default(:controller => '/main', :action => 'menue')
     #redirect_to '/'
   end
+
+
+  def statistics
+  
+    if params[:date] == nil
+      # start with last month 
+      mydate = Date.today.last_month
+      @startmonth = mydate.month
+      @startyear = mydate.year
+    else
+      mydate = Date.parse(params[:date])
+      @startmonth = mydate.month
+      @startyear = mydate.year
+    end
+        
+    # one month earlier
+    @month_before = mydate.last_month.month
+    @year_before = mydate.last_month.year
+    
+    # one month after
+    @month_next = mydate.next_month.month
+    @year_next = mydate.next_month.year
+  
+  end
+
 	
+  def render_graph
+    
+    month = params[:m].to_i
+    year = params[:y].to_i
+    
+    # get number of days in month
+    puts numdays = Time::days_in_month(month, year)
+    
+    # generate arrays for month
+    gains_arr = Array.new(numdays)
+    gains_arr.fill(0)
+    expenses_arr = Array.new(numdays)
+    expenses_arr.fill(0)
+    
+    first_day = year.to_s+"-"+month.to_s+"-01"
+    last_day = year.to_s+"-"+month.to_s+"-"+numdays.to_s
+    
+    gains = Gain.find(:all, :conditions => { :datum => first_day..last_day })
+    gains.each do |gain|
+      datum = Date.parse(gain[:datum].to_s)
+      gains_arr[datum.day] += gain[:netto]
+    end
+    
+    expenses = Expense.find(:all, :conditions => { :datum => first_day..last_day })
+    expenses.each do |expense|
+      datum = Date.parse(expense[:datum].to_s)
+      expenses_arr[datum.day] += expense[:netto]
+    end
+
+    puts gains_list = gains_arr.join(',')
+    puts expenses_list = expenses_arr.join(',')
+     
+    graph = Scruffy::Graph.new
+    graph.title = Date::MONTHNAMES[month].to_s+" "+year.to_s
+    graph.add(:line, t(:gains), gains_arr)
+    graph.add(:line, t(:expenses), expenses_arr)
+
+	graph_blob = graph.render :size => [600,400], :as => 'PNG'
+    send_data graph_blob, :filename => 'graph.png', :type => 'image/png', :disposition => 'inline'
+ 
+  end
+
+
 
 end
