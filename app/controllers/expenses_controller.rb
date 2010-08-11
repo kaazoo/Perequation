@@ -1,8 +1,3 @@
-# deutsche Übersetzung der Monatesnamen:
-#class Date
-# MONTHNAMES.replace([nil] + %w(Januar Februar März April Mai Juni Juli August September Oktober November Dezember) )
-#end
-
 class ExpensesController < ApplicationController
 
   # Klasse für Geld und Kommadarstellung:

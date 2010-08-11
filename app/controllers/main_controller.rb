@@ -1,15 +1,6 @@
-# deutsche Übersetzung der Monatesnamen:
-
-#class Date
-# remove MONTHNAMES
-# MONTHNAMES = Array.new('Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember')
- 
- #MONTHNAMES.replace([nil] + %w(Januar Februar März April Mai Juni Juli August September Oktober November Dezember) )
-#end
-
 class MainController < ApplicationController
 
-  # nutzer-login:
+  # user login:
   include AuthenticatedSystem
   #before_filter :login_required
 
@@ -482,7 +473,7 @@ class MainController < ApplicationController
         week_of_year = datum.strftime("%W").to_i
         expenses_arr[week_of_year] += expense[:netto]
       end
-    
+            
       # render graph
       graph = Scruffy::Graph.new
       graph.title = year.to_s

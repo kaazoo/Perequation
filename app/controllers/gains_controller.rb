@@ -1,20 +1,14 @@
-# deutsche Übersetzung der Monatesnamen:
-#class Date
-# MONTHNAMES.replace([nil] + %w(Januar Februar März April Mai Juni Juli August September Oktober November Dezember) )
-#end
-
-
 class GainsController < ApplicationController
   
-  # Klasse für Geld und Kommadarstellung:
+  # class for display of money values:
   require 'more_money'
   MoreMoney::Money.add_currency({:code => 'EUR', :description => 'euro'})
   
-  # nutzer-login:
+  # user login:
   include AuthenticatedSystem
   before_filter :login_required
   
-  # actions für die liste:
+  # actions for list:
   def formular_liste
     case params[:which_action]
       when "Auswahl aufsummieren"
@@ -27,7 +21,7 @@ class GainsController < ApplicationController
     end
   end
   
-  # summe der netto-beträge:
+  # sum of netto values:
   def auswahl_summe
   	@summe_netto = @summe_brutto = 0
   	for aw in params[:auswahl] do
@@ -37,62 +31,36 @@ class GainsController < ApplicationController
   	    @summe_brutto += gain.brutto
   	  end
   	end
-  	#@summe_netto = "Summe: "+summe_netto.to_s+" (Netto)"
-  	#@summe_brutto = "Summe: "+summe_brutto.to_s+" (Brutto)"
-  	#index
   	render :partial => 'summe'
   end
   
   def auswahl_abrechnung
     puts params
     
-    # auswahl an partial-view senden:
+    # send selection to partial view:
     if params[:auswahl]
-    @nicht_bezahlt = Array.new
-    @bezahlt = Array.new
-    #i = 0
-    
-    @summe_netto = @summe_brutto = 0
-    for aw in params[:auswahl] do
-  	  if aw[1].to_i == 1
-  	    gain = Gain.find(aw[0].to_i)
-  	    # schon bezahlt?
-  	    if gain.bezahlt == true
-          @summe_netto += gain.netto
-          @summe_brutto += gain.brutto
-          puts @bezahlt << gain.id
-        else
-          puts @nicht_bezahlt << gain.id
-          #puts i = i + 1
-        end
+      @nicht_bezahlt = Array.new
+      @bezahlt = Array.new
+      @summe_netto = @summe_brutto = 0
+      
+      for aw in params[:auswahl] do
+  	    if aw[1].to_i == 1
+  	      gain = Gain.find(aw[0].to_i)
+  	      # already paid?
+  	      if gain.bezahlt == true
+            @summe_netto += gain.netto
+            @summe_brutto += gain.brutto
+            puts @bezahlt << gain.id
+          else
+            puts @nicht_bezahlt << gain.id
+          end
+  	    end
   	  end
-  	end
-  	#if (@summe_netto == 0) || (@summe_brutto == 0)
-  	#  flash[:ajax_hinweis] = "Bitte Eintr&auml;ge aus der Liste markieren!"
-  	#end
-
-     
-      #@auswahl = params[:auswahl]
-      #puts @auswahl
-      render :partial => 'abrechnung'
-    # daten kommen aus flash-speicher vom view zurück:
-    else
-      #puts flash[:auswahl]
-      #@summe_netto = @summe_brutto = 0
-  	  #for aw in flash[:auswahl] do
-  	  #  if aw[1].to_i == 1
-  	  #    gain = Gain.find(aw[0].to_i)
-  	  #    @summe_netto += gain.netto
-  	  #    @summe_brutto += gain.brutto
-  	  #  end
-  	  #end
   	  
-  	  #if (@summe_netto == 0) || (@summe_brutto == 0)
-  	  #  flash[:hinweis] = "Bitte Eintr&auml;ge aus der Liste markieren!"
-  	  #end
-  	  #if params[:abrechnung][:name] == ""
-  	  #  flash[:hinweis2] = "Bitte einen Namen angeben!"
-  	  #end
+      render :partial => 'abrechnung'
+      
+    # data comes back from flash variable of view:
+    else
   	  @summe_netto = flash[:netto]
   	  @summe_brutto = flash[:brutto]
   	  @abrechnung_name = params[:abrechnung][:name]
@@ -105,8 +73,7 @@ class GainsController < ApplicationController
     	render :action => 'list'
   	  end
   	  if (@summe_netto != 0) && (@abrechnung_name != nil) && (@abrechnung_name != "")
-  	  #if (@abrechnung_name != nil) && (@abrechnung_name != "")
-  	    # TODO datenbankeinträge machen
+  	    # TODO: create database entries
   	    statement = Statement.new
   	    statement.name = @abrechnung_name
   	    statement.einnahmen_netto = @summe_netto
@@ -124,20 +91,16 @@ class GainsController < ApplicationController
 	  	  gain.abgerechnet = true
 	  	  gain.save
   	    end
-  	  
-        #redirect_to :action => 'list/all'
   	  end
+  	  
       # bestehende abrechnung erweitern:
       if (@summe_netto != 0) && (@abrechnung_bestehend != nil) && (@abrechnung_bestehend != "")
         statement = Statement.find(@abrechnung_bestehend)
   	    @abrechnung_name = statement.name
   	    statement.einnahmen_netto = @summe_netto
   	    statement.einnahmen_brutto = @summe_brutto
-  	    #statement.ausgaben_netto = 0
-  	    #statement.ausgaben_brutto = 0
   	    statement.gewinn_netto = statement.einnahmen_netto - statement.ausgaben_netto
   	    statement.gewinn_brutto = statement.einnahmen_brutto - statement.ausgaben_brutto
-  	    #statement.erstellungsdatum = Date.today
         statement.save
         
         for bz in @bezahlt do
@@ -145,9 +108,7 @@ class GainsController < ApplicationController
 	  	  gain.statement_id = statement.id
 	  	  gain.abgerechnet = true
 	  	  gain.save
-  	    end
-  	  
-        #redirect_to :action => 'list/all'
+  	    end  	  
   	  end
       render :partial => 'abrechnung'
     end

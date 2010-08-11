@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   
   
-  # nutzer-login:
+  # user login:
   include AuthenticatedSystem
   before_filter :login_required
   
