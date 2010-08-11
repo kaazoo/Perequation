@@ -5,7 +5,9 @@
 
 <br /><br /><br />
 
-<%= link_to t(:month_earlier),  { :controller => "main", :action => "statistics", :date => "#{@year_before}-#{@month_before}-01" }, :target => "mainFrame" , :class => "mainmenue" %> 
+<%= link_to t(:month_earlier),  { :controller => "main", :action => "statistic_month", :date => "#{@year_before}-#{@month_before}-01" }, :target => "mainFrame" , :class => "mainmenue" %> 
 
-<%= link_to t(:month_later),  { :controller => "main", :action => "statistics", :date => "#{@year_next}-#{@month_next}-01" }, :target => "mainFrame" , :class => "mainmenue" %> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<%= link_to t(:month_later),  { :controller => "main", :action => "statistic_month", :date => "#{@year_next}-#{@month_next}-01" }, :target => "mainFrame" , :class => "mainmenue" %> 
 
