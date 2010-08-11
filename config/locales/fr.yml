@@ -1,9 +1,11 @@
 fr:
   logged_in: Vous êtes connecté en tant que
   lang: Langue
+  gains: Recettes
   own_gains: Recettes propres
   all_gains: Tous des recettes
   future_gains: Recettes futures
+  expenses: Dépenses
   own_expenses: Dépenses propres
   all_expenses: Tous des dépenses
   future_expenses: Dépenses futures
@@ -12,6 +14,10 @@ fr:
   logout: Logout
   please_login: login, s'il vous plaît
   password: Mot de passe
+  statistics: Statistiques
+  month_earlier: mois avant
+  month_later: mois après
+  
 
   # French translations for Ruby on Rails 
   # by Christian Lescuyer (christian@flyingcoders.com)

@@ -1,9 +1,11 @@
 de:
   logged_in: Sie sind eingeloggt als
   lang: Sprache
+  gains: Einnahmen
   own_gains: Eigene Einnahmen
   all_gains: Alle Einnahmen
   future_gains: Zu erwartende Einnahmen
+  expenses: Ausgaben
   own_expenses: Eigene Ausgaben
   all_expenses: Alle Ausgaben
   future_expenses: Zu erwartende Ausgaben
@@ -12,6 +14,9 @@ de:
   logout: Ausloggen
   please_login: bitte einloggen
   password: Passwort
+  statistics: Statistiken
+  month_earlier: Monat früher
+  month_later: Monat später
  
  
   # German translations for Ruby on Rails 

@@ -1,9 +1,11 @@
 en:
   logged_in: You are logged in as
   lang: Language
+  gains: Gains
   own_gains: Own gains
   all_gains: All gains
   future_gains: Future gains
+  expenses: Expenses
   own_expenses: Own expenses
   all_expenses: All expenses
   future_expenses: Future expenses
@@ -12,3 +14,6 @@ en:
   logout: Logout
   please_login: please log in
   password: Password
+  statistics: Statistics
+  month_earlier: month earlier
+  month_later: month later
