@@ -80,6 +80,12 @@ function refresh()
 <div class="mainmenue_footer">&nbsp;</div>
 <div><%= link_to t(:statements), { :controller => "main", :action => "abrechnungen" }, :class => "mainmenue", :target => "mainFrame" %></div>
 
+<div class="mainmenue_footer">&nbsp;</div>
+<div><%= link_to t(:statements), { :controller => "statements" }, :class => "mainmenue", :target => "mainFrame" %></div>
+
+<div class="mainmenue_footer">&nbsp;</div>
+<div><%= link_to t(:statistics), { :controller => "main", :action => "statistics" }, :class => "mainmenue", :target => "mainFrame" %></div>
+
 <div class="mainmenue_footer" style="height:50px">&nbsp;</div>
 <div><%= link_to t(:logout), { :controller => "main", :action => "logout" }, :target => "mainFrame" , :class => "mainmenue", :onclick => "doLoad();" %></div>
 
