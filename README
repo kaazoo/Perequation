@@ -1,8 +1,10 @@
 == Péréquation ==
 
-This is a software to manage revenue sharing between two business partners.
+This is a software based on Ruby on Rails which can be used to manage
+revenue sharing between two business partners.
 
-Péréquation needs the RubyGems 'more_money', 'fpdf' and 'will_paginate'.
+Péréquation needs the Gems 'more_money', 'fpdf', 'will_paginate',
+'scruffy', 'builder' and 'rmagick'.
 It includes the Rails plugins 'acts_as_authenticated' and 'render_component'.
 
 Supported languages: English, French, German
