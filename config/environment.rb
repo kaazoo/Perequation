@@ -61,7 +61,7 @@ end
 # Include your application configuration below
 
 require "will_paginate"
-#require "german_date_names"
+require "scruffy"
 require "yaml"
 
 if APP_CONFIG = YAML.load_file("#{RAILS_ROOT}/config/perequation.yml")
