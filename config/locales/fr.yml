@@ -14,9 +14,12 @@ fr:
   logout: Logout
   please_login: login, s'il vous plaît
   password: Mot de passe
-  statistics: Statistiques
-  month_earlier: mois avant
-  month_later: mois après
+  statistic_month: Statistique du mois
+  statistic_year: Statistique de l'année
+  month_earlier: Un mois avant
+  month_later: Un mois après
+  year_earlier: Un année avant
+  year_later: Un année après
   
 
   # French translations for Ruby on Rails 

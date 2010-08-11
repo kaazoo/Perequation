@@ -14,9 +14,12 @@ de:
   logout: Ausloggen
   please_login: bitte einloggen
   password: Passwort
-  statistics: Statistiken
-  month_earlier: Monat früher
-  month_later: Monat später
+  statistic_month: Monatsstatistik
+  statistic_year: Jahresstatistik
+  month_earlier: Einen Monat früher
+  month_later: Einen Monat später
+  year_earlier: Ein Jahr früher
+  year_later: Ein Jahr später
  
  
   # German translations for Ruby on Rails 
